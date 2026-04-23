@@ -3,6 +3,32 @@ const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
 
+function loadEnvFile(fileName) {
+  const filePath = path.join(__dirname, fileName);
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/);
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) {
+      return;
+    }
+
+    const [key, ...valueParts] = trimmed.split("=");
+    const value = valueParts.join("=").replace(/^["']|["']$/g, "");
+    if (process.env[key] || !value || /^(VERCEL|TURBO|NX)_?/.test(key)) {
+      return;
+    }
+
+    process.env[key] = value;
+  });
+}
+
+loadEnvFile(".env");
+loadEnvFile(".env.local");
+
 const PORT = process.env.PORT || 3000;
 const HOST = "127.0.0.1";
 const ROOT = __dirname;

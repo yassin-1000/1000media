@@ -81,6 +81,28 @@
           "source_urls": [
             "https://www.jpost.com/history/article-892550"
           ]
+        },
+        {
+          "title": "The Vanishing Generation Just Forced Social Media To Slow Down",
+          "event_or_subject": "Multilingual survivor testimony on Instagram",
+          "summary": "The Jerusalem Post reported that Meta's remembrance project translated Holocaust survivor testimony into seven languages under the theme 'A Vanishing Generation.' That gives the foundation a timely angle on why technology should be used to extend witness, not flatten it.",
+          "why_it_fits": "It lets the client connect memory, language, and urgency through a current platform-native example rather than a generic commemoration post.",
+          "urgency": "Use this week",
+          "published_at": "2026-04-15T02:51:00+03:00",
+          "source_urls": [
+            "https://www.jpost.com/israel-news/article-893026"
+          ]
+        },
+        {
+          "title": "One Campus Program Just Made Remembrance Feel Like A Conversation",
+          "event_or_subject": "USC students in intergenerational remembrance dialogue",
+          "summary": "USC Shoah Foundation's Yom HaShoah program centered a survivor, her granddaughter, and university students in live dialogue. This is useful not because it is an event, but because it models a more human and contemporary creative format for remembrance content.",
+          "why_it_fits": "It gives the client a replicable storytelling format rooted in people, not ceremony logistics.",
+          "urgency": "Timely now",
+          "published_at": "2026-04-17",
+          "source_urls": [
+            "https://sfi.usc.edu/news-events"
+          ]
         }
       ]
     },
@@ -160,6 +182,28 @@
           "published_at": "2026-04-23",
           "source_urls": [
             "https://www.mrt.com/news/article/lotto-texas-mesquite-jackpot-win-22219848.php"
+          ]
+        },
+        {
+          "title": "The Market Rally That Could Fool Everyone",
+          "event_or_subject": "Volatility risk inside a record-setting rally",
+          "summary": "Business Insider reported that Michael Burry expects more new highs mixed with violent drops rather than a simple one-way crash. That gives Zoomex a timely angle on why traders get trapped when they mistake rising prices for safety.",
+          "why_it_fits": "It turns a recognizable macro voice into a lesson about discipline, emotional control, and hidden risk.",
+          "urgency": "Use in the next 48 hours",
+          "published_at": "2026-04-20T14:21:00.876Z",
+          "source_urls": [
+            "https://www.businessinsider.com/big-short-michael-burry-record-stock-market-rally-crash-ai-2026-4"
+          ]
+        },
+        {
+          "title": "A Security Headline Just Became A Trader Story",
+          "event_or_subject": "Crypto exploit losses and account-risk behavior",
+          "summary": "The Block said crypto hacks and exploits across March reached $52 million. Zoomex can use this as timely content about trader habits under stress, what people forget to secure when markets move fast, and why bad operational hygiene becomes expensive.",
+          "why_it_fits": "It is adjacent to trading behavior and turns a security report into a very practical audience lesson.",
+          "urgency": "Fresh this cycle",
+          "published_at": "2026-04-01T05:28:00-04:00",
+          "source_urls": [
+            "https://www.theblock.co/post/396010/crypto-hack-exploit-losses-52-million"
           ]
         }
       ]
@@ -241,6 +285,28 @@
           "source_urls": [
             "https://www.theblock.co/post/397715/doublezero-rolls-out-edge-a-low-latency-onchain-data-delivery-service-on-its-global-fiber-depin-infrastructure"
           ]
+        },
+        {
+          "title": "The Builder Money Signal Nobody Can Ignore",
+          "event_or_subject": "New capital moving into the Solana builder ecosystem",
+          "summary": "TheStreet reported that Alchemy launched a $20 million fund for Solana builders. The story matters less as a fund announcement and more as evidence that serious capital is still chasing products, tools, and teams that ship.",
+          "why_it_fits": "It reframes a funding update into a credibility signal for builders, founders, and traders watching where momentum is real.",
+          "urgency": "Hot right now",
+          "published_at": "2026-04-10",
+          "source_urls": [
+            "https://www.thestreet.com/crypto/markets/alchemy-launches-20-million-fund-for-solana-builders/"
+          ]
+        },
+        {
+          "title": "Security Panic Just Became A Maturity Test For Solana",
+          "event_or_subject": "Post-hack ecosystem response and infrastructure hardening",
+          "summary": "Decrypt reported on Solana's STRIDE security push after the Drift exploit. This gives the brand a timely angle on how ecosystems respond to failure, harden trust, and prove they can get more serious after bad headlines.",
+          "why_it_fits": "It is broader than one exploit and speaks to the kind of resilience narrative Solana should own quickly.",
+          "urgency": "Still timely this week",
+          "published_at": "2026-04-07",
+          "source_urls": [
+            "https://decrypt.co/363521/solana-foundation-help-secure-defi-protocols-285-million-drift-hack/"
+          ]
         }
       ]
     },
@@ -321,6 +387,540 @@
           "source_urls": [
             "https://m.economictimes.com/wealth/plan/indian-students-shift-from-us-uk-to-europe-and-asia-as-visa-hurdles-rise-and-costs-surge/articleshow/129712946.cms",
             "https://m.economictimes.com/nri/study/beyond-big-four-indian-students-are-dumping-default-study-abroad-settings/articleshow/130084581.cms"
+          ]
+        },
+        {
+          "title": "The Policy Shift Students Will Feel Before Universities Do",
+          "event_or_subject": "Government-backed research and mobility openings for Indian students",
+          "summary": "Japan's LOTUS Programme opened 1,000 funded slots for Indian Master's students, PhD scholars, and researchers. This is not just a scholarship story; it is a government-policy signal about which countries are actively competing for Indian talent.",
+          "why_it_fits": "It helps LeverageEDU interpret mobility policy as a market shift students should act on early.",
+          "urgency": "Application window open now",
+          "published_at": "2026-04-22T13:34:35+05:30",
+          "source_urls": [
+            "https://m.economictimes.com/nri/study/japans-lotus-2026-programme-who-can-apply-and-how-1000-indian-scholars-can-benefit/articleshow/130435647.cms"
+          ]
+        },
+        {
+          "title": "The Scholarship Flood That Could Change The Whole Funnel",
+          "event_or_subject": "Foreign universities using scholarships to win Indian demand",
+          "summary": "Business Standard reported that six foreign universities committed a combined Rs 1,000 crore scholarship pool for India-campus programs. That is useful LeverageEDU content because it signals how aggressively institutions are moving on affordability, not just branding.",
+          "why_it_fits": "It gives the team a broader admissions-market angle beyond one program or one campus.",
+          "urgency": "Fresh this cycle",
+          "published_at": "2026-04-13T22:22:00+05:30",
+          "source_urls": [
+            "https://www.business-standard.com/education/news/six-foreign-universities-commit-1-000-crore-scholarship-pool-for-india-126041301151_1.html"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "siyata-ptt",
+      "client_name": "Siyata PTT",
+      "human_story_signals": [
+        {
+          "title": "This Medic Built A Communication Lifeline For Crowds In Crisis",
+          "person_or_subject": "Cody Snow",
+          "person_descriptor": "President of Prevent Medical Solutions and event medical operator",
+          "summary": "FirstNet profiled Cody Snow, whose mobile medical team supports communications for large public events where fast coordination matters. His work turns push-to-talk from a product feature into a human safety story about medics, dispatchers, and field teams moving as one.",
+          "why_could_go_viral": "It makes mission-critical communications visible through the person responsible for keeping chaotic public events medically covered.",
+          "lesson": "The most important communication tools are the ones people barely notice until seconds matter.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-02-01",
+          "source_urls": [
+            "https://firstnet.gov/tags/key-technologyissue/push-talk"
+          ]
+        },
+        {
+          "title": "This First Responder Job Starts Before The Ambulance Moves",
+          "person_or_subject": "Public safety telecommunicators",
+          "person_descriptor": "911 dispatchers and emergency communications workers",
+          "summary": "A 2026 discussion around the Enhancing First Response Act highlighted how public safety telecommunicators gather lifesaving information, give instructions, and protect both civilians and responders. Siyata can make the invisible voice behind the emergency feel like the first human link in the rescue chain.",
+          "why_could_go_viral": "People share stories that reveal the hidden person doing life-or-death work before the visible heroes arrive.",
+          "lesson": "Emergency response is a communication story before it becomes a transportation story.",
+          "platform_hint": "instagram",
+          "published_at": "2026-02-10",
+          "source_urls": [
+            "https://www.reddit.com/r/911dispatchers/comments/1r0ova4/enhancing_first_response_act_s725/"
+          ]
+        },
+        {
+          "title": "This Fire Crew Needed One Button More Than Another App",
+          "person_or_subject": "Fire and rescue field teams",
+          "person_descriptor": "first responders using rugged push-to-talk devices",
+          "summary": "Siyata's fire and rescue materials describe emergency crews needing instant group communication, traditional radio bridging, and fast responder notification. The human story is about crews who cannot afford menus, typing, or delay when the call becomes dangerous.",
+          "why_could_go_viral": "It turns a technical device into a simple contrast: in an emergency, one button can beat a smartphone screen.",
+          "lesson": "Great field technology removes decisions when people are already under pressure.",
+          "platform_hint": "instagram",
+          "published_at": "2026-03-01",
+          "source_urls": [
+            "https://siyata.net/assets/2024/11/Siyata-SD7-Fire-Rescue.pdf"
+          ]
+        },
+        {
+          "title": "This Safety Team Turned Burning Man Into A Push-To-Talk Test",
+          "person_or_subject": "Burning Man safety and operations teams",
+          "person_descriptor": "field teams coordinating a massive temporary city",
+          "summary": "A 2025 field-communications update described Siyata rugged devices and ESChat push-to-talk service supporting safety and operations staff at Burning Man. The story gives Siyata a memorable human setting where normal coordination breaks down and fast group communication becomes essential.",
+          "why_could_go_viral": "A desert city is a visual setting that makes the need for rugged, instant communication easy to understand.",
+          "lesson": "The harder the environment, the more simple communication has to feel.",
+          "platform_hint": "instagram",
+          "published_at": "2025-08-01",
+          "source_urls": [
+            "https://www.reddit.com/r/planhub/comments/1mzu4he/siyata_mobile_and_eschat_will_power_critical_push/"
+          ]
+        },
+        {
+          "title": "This Public Safety Network Makes Responders Sound Like One Team",
+          "person_or_subject": "FirstNet emergency response teams",
+          "person_descriptor": "public safety teams using broadband and push-to-talk coordination",
+          "summary": "FirstNet describes push-to-talk as a way for firefighters, dispatch, emergency managers, and first responders to connect instantly during complex operations. Siyata can frame the human story around responders who are separated physically but need to operate like one room.",
+          "why_could_go_viral": "It shows the invisible teamwork behind a rescue, which is more emotional than a device feature list.",
+          "lesson": "In field operations, communication is the system that turns many people into one response.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-02-01",
+          "source_urls": [
+            "https://firstnet.gov/tags/key-technologyissue/push-talk"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "FirstNet Keeps Proving Push-To-Talk Is A Public Safety Story",
+          "event_or_subject": "FirstNet push-to-talk communications coverage",
+          "summary": "FirstNet's push-to-talk coverage emphasizes instant connection between firefighters, dispatch, first responders, and emergency managers during complex incidents. Siyata can piggyback by explaining why field teams need communication that behaves more like a mission-critical utility than a normal phone app.",
+          "why_it_fits": "It connects Siyata's category directly to public safety outcomes, not just hardware specifications.",
+          "urgency": "Evergreen public-safety window",
+          "published_at": "2026-02-01",
+          "source_urls": [
+            "https://firstnet.gov/tags/key-technologyissue/push-talk"
+          ]
+        },
+        {
+          "title": "Emergency Dispatchers Are Fighting To Be Recognized As First Responders",
+          "event_or_subject": "Enhancing First Response Act conversation",
+          "summary": "The 2026 Enhancing First Response Act discussion centered on recognizing public safety telecommunicators for their role in emergency response. Siyata can use this as a timely content angle about the people and tools that make response possible before anyone reaches the scene.",
+          "why_it_fits": "The topic expands Siyata beyond devices into the human communications chain behind every rescue.",
+          "urgency": "Policy conversation active",
+          "published_at": "2026-02-10",
+          "source_urls": [
+            "https://www.reddit.com/r/911dispatchers/comments/1r0ova4/enhancing_first_response_act_s725/"
+          ]
+        },
+        {
+          "title": "Large Events Need Mission-Critical Communications Before They Need A Crisis",
+          "event_or_subject": "Push-to-talk use at major public gatherings",
+          "summary": "FirstNet's public safety examples include event medical teams and federal operations using push-to-talk to coordinate complex responses. Siyata can turn any major festival, sports event, or conference headline into a preparedness post about why teams need reliable group communication before the first incident happens.",
+          "why_it_fits": "It gives Siyata a global piggyback angle for any crowded event where safety, logistics, and fast coordination matter.",
+          "urgency": "Use around major events",
+          "published_at": "2026-02-01",
+          "source_urls": [
+            "https://firstnet.gov/tags/key-technologyissue/push-talk"
+          ]
+        },
+        {
+          "title": "The Invisible Worker Every Disaster Depends On",
+          "event_or_subject": "Public safety telecommunicators and emergency coordination policy",
+          "summary": "The Enhancing First Response Act conversation centered on dispatchers and telecommunicators whose work shapes response before sirens arrive. This gives Siyata a strong adjacent-world story about communications labor, policy recognition, and why the voice behind the response chain matters.",
+          "why_it_fits": "It is a communications story with human stakes, not just a hardware or conference update.",
+          "urgency": "Live policy window",
+          "published_at": "2026-02-10",
+          "source_urls": [
+            "https://www.reddit.com/r/911dispatchers/comments/1r0ova4/enhancing_first_response_act_s725/"
+          ]
+        },
+        {
+          "title": "The Public Event Risk Nobody Plans For Early Enough",
+          "event_or_subject": "Medical and operations coordination at large events",
+          "summary": "FirstNet's field examples show emergency medical and operations teams relying on push-to-talk during major events and complex incidents. Siyata can use this as a broader preparedness angle for festivals, stadium events, transport hubs, and any crowded environment where communication failure becomes a safety story.",
+          "why_it_fits": "It expands the category into logistics, crowd safety, and risk planning instead of only first-responder branding.",
+          "urgency": "Always relevant during live event season",
+          "published_at": "2026-02-01",
+          "source_urls": [
+            "https://firstnet.gov/tags/key-technologyissue/push-talk"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "dentiste-toothpaste",
+      "client_name": "Dentiste Toothpaste",
+      "human_story_signals": [
+        {
+          "title": "This Thai Superstar Turned Fresh Breath Into Everyday Confidence",
+          "person_or_subject": "LISA",
+          "person_descriptor": "Thai artist and Dentiste brand ambassador",
+          "summary": "ThaiQuest reported that Dentiste is using LISA's global Thai success story to position the brand around confidence, fresh breath, and premium oral care across Asia. The human angle is simple: a world-famous performer makes oral care feel connected to presence, closeness, and self-assurance.",
+          "why_could_go_viral": "It connects a celebrity people recognize with an intimate everyday insecurity people rarely admit publicly.",
+          "lesson": "Oral care content travels when it is framed as confidence, not just hygiene.",
+          "platform_hint": "instagram",
+          "published_at": "2026-01-01",
+          "source_urls": [
+            "https://pr.thaiquest.com/post/684230"
+          ]
+        },
+        {
+          "title": "This Dentist Says Sleep May Start In Your Mouth",
+          "person_or_subject": "Payam Attai",
+          "person_descriptor": "ADA member dentist involved in sleep and airway dentistry",
+          "summary": "Oral Health Group reported that dentists and medical professionals met at an ADA Sleep and Airway-Focused Dentistry Summit to discuss dentistry's growing role in sleep health. Payam Attai said better sleep health remains a priority for clinicians, which gives Dentiste a credible human expert angle around nighttime routines.",
+          "why_could_go_viral": "It reframes brushing at night from a boring habit into a surprising sleep-and-health ritual people can share.",
+          "lesson": "The strongest wellness hooks make a familiar routine feel newly important.",
+          "platform_hint": "linkedin",
+          "published_at": "2025-12-25",
+          "source_urls": [
+            "https://www.oralhealthgroup.com/news/the-growing-link-between-oral-health-and-sleep-from-the-oral-microbiome-to-sleep-apnea-care-1003992706/"
+          ]
+        },
+        {
+          "title": "These Researchers Found Bad Breath Is Really A Bacteria Story",
+          "person_or_subject": "Osaka University researchers",
+          "person_descriptor": "research team studying bacterial interactions behind halitosis",
+          "summary": "The British Dental Journal covered research from Osaka University identifying how interactions between common oral bacteria can produce compounds linked to bad breath. Dentiste can turn that into a visual, science-backed story about why freshness is about the mouth ecosystem, not just masking odor.",
+          "why_could_go_viral": "Bad breath is embarrassing, but the bacteria explanation gives people a non-shaming reason to watch and share.",
+          "lesson": "People are more open to hygiene content when it explains the mechanism without judgment.",
+          "platform_hint": "instagram",
+          "published_at": "2024-04-26",
+          "source_urls": [
+            "https://www.nature.com/articles/s41415-024-7309-8"
+          ]
+        },
+        {
+          "title": "This Bad Breath Sufferer Turned A Private Problem Into A Public Protocol",
+          "person_or_subject": "Chronic bad breath community member",
+          "person_descriptor": "person sharing a decade-long halitosis journey online",
+          "summary": "A Reddit user in the bad breath community described spending 10 years dealing with chronic bad breath before sharing a detailed routine and research-backed protocol. Dentiste can use the story carefully as a social-listening insight into how emotional and isolating breath anxiety can feel.",
+          "why_could_go_viral": "It turns a hidden insecurity into a human confession, which makes viewers feel seen instead of sold to.",
+          "lesson": "Fresh breath content works when it respects the emotion behind the problem.",
+          "platform_hint": "instagram",
+          "published_at": "2026-03-30",
+          "source_urls": [
+            "https://www.reddit.com/r/badbreath/comments/1s82q31/i_cured_10_years_of_chronic_bad_breath_here_is/"
+          ]
+        },
+        {
+          "title": "This Study Made The Mouth Feel Like A Health Dashboard",
+          "person_or_subject": "Oral microbiome researchers",
+          "person_descriptor": "scientists studying mouth bacteria and biological age",
+          "summary": "Nature Communications published research on oral microbiome signatures predicting biological age and host health. Dentiste can make the story human by asking what it means when the mouth becomes a visible signal of broader wellbeing.",
+          "why_could_go_viral": "Longevity content travels fast, and the mouth-as-health-dashboard angle is surprising enough to stop the scroll.",
+          "lesson": "A daily habit becomes more compelling when people understand the signal behind it.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.nature.com/articles/s41467-026-72096-2"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "A 104-Study Review Just Made Oral Care Bigger Than Teeth",
+          "event_or_subject": "Oral microbiome linked to systemic disease review",
+          "summary": "Oral Health Group reported on April 15, 2026 that a systematic review of 104 studies strengthened links between the oral microbiome and broader health. Dentiste can use this as a timely educational angle about why daily oral care is part of whole-body wellness.",
+          "why_it_fits": "It gives Dentiste a science-led reason to talk about oral care as a serious wellness habit instead of a cosmetic routine.",
+          "urgency": "Fresh research window",
+          "published_at": "2026-04-15",
+          "source_urls": [
+            "https://www.oralhealthgroup.com/clinical/dental-research/oral-microbiome-linked-to-systemic-disease-in-review-of-104-studies-1003995124/"
+          ]
+        },
+        {
+          "title": "Nature Just Turned The Oral Microbiome Into An Aging Story",
+          "event_or_subject": "Nature Communications oral microbiome aging study",
+          "summary": "Nature Communications published a 2026 study on oral microbiome signatures predicting biological age and host health. Dentiste can piggyback by creating careful, non-medical content around the mouth as a signal-rich part of the body.",
+          "why_it_fits": "It connects oral care to one of the biggest wellness conversations online: longevity and biological age.",
+          "urgency": "Use this week",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.nature.com/articles/s41467-026-72096-2"
+          ]
+        },
+        {
+          "title": "Dentiste Is Publicly Expanding From Breath Care To Holistic Oral Care",
+          "event_or_subject": "Dentiste 2026 business plan",
+          "summary": "ThaiQuest reported that Dentiste's 2026 plan is to become Asia's premium oral-care leader, expanding beyond breath care into cavities, sensitivity, whitening, and mouth spray products. This is a timely brand-category angle around how fresh breath is becoming part of a larger confidence and wellness portfolio.",
+          "why_it_fits": "It gives the team a direct category story about Dentiste's evolution without relying only on product posts.",
+          "urgency": "Fresh brand planning cycle",
+          "published_at": "2026-01-01",
+          "source_urls": [
+            "https://pr.thaiquest.com/post/684230"
+          ]
+        },
+        {
+          "title": "The Medical Story Hiding Inside Your Bathroom Sink",
+          "event_or_subject": "Oral microbiome science and whole-body health",
+          "summary": "A 104-study review highlighted links between oral dysbiosis and broader health conditions, pushing oral care into the mainstream medical conversation. Dentiste can piggyback by making toothpaste feel connected to wellness, prevention, and self-respect rather than just minty freshness.",
+          "why_it_fits": "It directly matches the user's request for medical-world news that still feels relevant to toothpaste.",
+          "urgency": "Fresh research angle",
+          "published_at": "2026-04-15",
+          "source_urls": [
+            "https://www.oralhealthgroup.com/clinical/dental-research/oral-microbiome-linked-to-systemic-disease-in-review-of-104-studies-1003995124/"
+          ]
+        },
+        {
+          "title": "A Thai Consumer Brand Just Became A Bigger Category Story",
+          "event_or_subject": "Dentiste's expansion as a Thai premium oral-care brand",
+          "summary": "ThaiQuest reported Dentiste's plan to expand from breath care into a larger premium oral-care portfolio. That gives the team an adjacent-world angle around Thai products, Asian consumer brands, and what happens when a local category player starts behaving like a regional lifestyle brand.",
+          "why_it_fits": "It ties toothpaste to the Thai products world, premium consumer branding, and broader category movement.",
+          "urgency": "Current brand-evolution window",
+          "published_at": "2026-01-01",
+          "source_urls": [
+            "https://pr.thaiquest.com/post/684230"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "africas-business-heroes",
+      "client_name": "Africa's Business Heroes (ABH)",
+      "human_story_signals": [
+        {
+          "title": "This Founder Turned Organic Waste Into Animal Feed And Won Africa",
+          "person_or_subject": "Diana Orembe",
+          "person_descriptor": "Tanzanian co-founder and CEO of NovFeed",
+          "summary": "Africa.com reported that Diana Orembe, co-founder and CEO of NovFeed, was named Africa's Business Hero for a biotech venture converting organic waste into sustainable protein for animal feed. Her story gives ABH a perfect founder arc: local problem, scientific solution, food-security impact, and continental recognition.",
+          "why_could_go_viral": "It has a clean transformation hook: waste becomes protein, and a Tanzanian founder becomes a continental hero.",
+          "lesson": "The best entrepreneurship stories make the problem and the transformation instantly visible.",
+          "platform_hint": "instagram",
+          "published_at": "2026-03-01",
+          "source_urls": [
+            "https://africa.com/africas-business-heroes-opens-2026-applications-with-1-5-million-for-african-entrepreneurs/"
+          ]
+        },
+        {
+          "title": "This Nigerian Founder Is Bringing Diagnostics To Africa's Next Billion",
+          "person_or_subject": "Oluwasoga Oni",
+          "person_descriptor": "CEO and co-founder of MDaaS Global",
+          "summary": "An Africa's Business Heroes finalist announcement described Oluwasoga Oni's MDaaS Global as building modern diagnostic centers in clinically underserved communities, starting in Nigeria. The story is highly visual because it turns healthcare access from a policy issue into one founder trying to change where people can get tested.",
+          "why_could_go_viral": "Healthcare access stories travel when one founder's mission is tied to a massive underserved population.",
+          "lesson": "A founder story becomes bigger when the customer need is obvious and urgent.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-04-16",
+          "source_urls": [
+            "https://africabusinessheroes.org/upload/press_release/3ac4b41dacf15bf4df54bb2f3cbe1dcc.pdf?v732="
+          ]
+        },
+        {
+          "title": "This Founder Built Sales Software For Africa's Everyday Shops",
+          "person_or_subject": "Alexander Odhiambo",
+          "person_descriptor": "Solutech Limited founder and ABH prize winner",
+          "summary": "Aptantech reported that Alexander Odhiambo, founder of Solutech Limited, was among the winners of the Africa's Business Heroes prize contest. His story can be framed around software for real African businesses, not abstract startup jargon.",
+          "why_could_go_viral": "It makes B2B software feel human by tying it to shops, salespeople, and everyday African commerce.",
+          "lesson": "Founders win attention when their technology clearly helps real operators do business better.",
+          "platform_hint": "linkedin",
+          "published_at": "2025-03-18",
+          "source_urls": [
+            "https://aptantech.com/2025/03/18/alexander-odhiambo-the-solutech-limited-founder-among-three-winners-of-africas-business-heroes-prize-contest/"
+          ]
+        },
+        {
+          "title": "This Founder Put African Food Security Inside A Biotech Pitch",
+          "person_or_subject": "Diana Orembe",
+          "person_descriptor": "NovFeed co-founder building sustainable animal feed",
+          "summary": "The Next Africa described Diana Orembe and NovFeed as part of the 2025 Africa's Business Heroes top entrepreneur story. Her founder journey works for ABH because it connects science, food security, sustainability, and African industrial ambition in one person.",
+          "why_could_go_viral": "Food-security stories become more shareable when the innovation is concrete enough to picture.",
+          "lesson": "A great founder story should make the audience understand both the invention and the stakes.",
+          "platform_hint": "instagram",
+          "published_at": "2025-12-01",
+          "source_urls": [
+            "https://thenextafrica.com/africas-business-heroes-2025-celebrating-the-top-3-entrepreneurs/"
+          ]
+        },
+        {
+          "title": "This Founder Is Building Diagnostics Where Clinics Are Missing",
+          "person_or_subject": "Oluwasoga Oni",
+          "person_descriptor": "MDaaS Global co-founder expanding diagnostic access",
+          "summary": "ABH finalist materials describe MDaaS Global as operating modern diagnostic centers in clinically underserved communities. The story gives ABH a founder who is not just chasing growth, but trying to change what healthcare access feels like for ordinary families.",
+          "why_could_go_viral": "Healthcare infrastructure becomes emotional when the story is about who finally gets access.",
+          "lesson": "Impact entrepreneurship is strongest when the beneficiary is easy to imagine.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-04-16",
+          "source_urls": [
+            "https://africabusinessheroes.org/upload/press_release/3ac4b41dacf15bf4df54bb2f3cbe1dcc.pdf?v732="
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "ABH Just Reopened The Door With $1.5 Million For African Entrepreneurs",
+          "event_or_subject": "Africa's Business Heroes 2026 applications",
+          "summary": "Africa.com reported that Africa's Business Heroes opened 2026 applications with $1.5 million available for African entrepreneurs. This is the clearest time-sensitive content window: tell founders who should apply, what kinds of stories win, and why the application is itself a storytelling exercise.",
+          "why_it_fits": "It is directly tied to ABH's own funnel and gives the team a reason to post founder inspiration plus practical deadline content.",
+          "urgency": "Application cycle active",
+          "published_at": "2026-03-01",
+          "source_urls": [
+            "https://africa.com/africas-business-heroes-opens-2026-applications-with-1-5-million-for-african-entrepreneurs/"
+          ]
+        },
+        {
+          "title": "The 2026 Application Form Says Founder Story Is The Product",
+          "event_or_subject": "ABH 2026 offline application form",
+          "summary": "The ABH 2026 offline application form asks founders to explain who they are, what they do, and the journey that shaped them as entrepreneurs. ABH can turn this into a timely content series teaching founders how to tell the human story behind the business.",
+          "why_it_fits": "It connects the application mechanic directly to ABH's editorial strength: founder storytelling.",
+          "urgency": "Use during application season",
+          "published_at": "2026-04-01",
+          "source_urls": [
+            "https://africabusinessheroes.org/doc/application_form_2026_en.pdf"
+          ]
+        },
+        {
+          "title": "Senegal's Youth Olympic Moment Can Become A Founder Moment",
+          "event_or_subject": "Dakar and the 2026 Youth Olympic Games context",
+          "summary": "An ABH finalist announcement connected Senegal's growth and Dakar's upcoming role as host of the 2026 Youth Olympic Games to a bigger stage for African ambition. ABH can piggyback on major Africa-hosted global events by spotlighting entrepreneurs building around youth, sport, tourism, logistics, media, and local opportunity.",
+          "why_it_fits": "It turns a global sports/culture headline into a business-opportunity lens for African founders.",
+          "urgency": "Build into 2026 event cycle",
+          "published_at": "2025-09-01",
+          "source_urls": [
+            "https://www.africa-newsroom.com/press/africas-business-heroes-announces-2025-top-10-finalists"
+          ]
+        },
+        {
+          "title": "The Startup Application That Is Really A Story Test",
+          "event_or_subject": "ABH 2026 founder-story application cycle",
+          "summary": "The ABH application materials make clear that founder story and personal journey matter as much as the business itself. This gives ABH a broader entrepreneurship-media angle around how founders package traction, resilience, and purpose into something judges and audiences remember.",
+          "why_it_fits": "It is not just about the ABH competition; it is about what modern founder storytelling looks like.",
+          "urgency": "Use during application season",
+          "published_at": "2026-04-01",
+          "source_urls": [
+            "https://africabusinessheroes.org/doc/application_form_2026_en.pdf"
+          ]
+        },
+        {
+          "title": "The African Opportunity Story Hidden Inside A Sports Headline",
+          "event_or_subject": "Dakar's global-event moment and founder opportunity",
+          "summary": "The Africa's Business Heroes finalist announcement connected Dakar's role as host of the 2026 Youth Olympic Games with a bigger stage for growth and ambition. ABH can use this as a model for turning major continental moments into founder, logistics, tourism, media, and youth-opportunity content.",
+          "why_it_fits": "It pushes the editorial lens beyond startup funding into broader Africa-wide opportunity signals.",
+          "urgency": "Good now and into the 2026 cycle",
+          "published_at": "2025-09-01",
+          "source_urls": [
+            "https://www.africa-newsroom.com/press/africas-business-heroes-announces-2025-top-10-finalists"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "interfaith-sustain",
+      "client_name": "Interfaith",
+      "human_story_signals": [
+        {
+          "title": "This Faith Organizer Turned A State House Into A Climate Classroom",
+          "person_or_subject": "Faith Climate Action Day organizers",
+          "person_descriptor": "faith-based climate advocates in Vermont",
+          "summary": "Vermont Business Magazine reported that Vermont Interfaith Power and Light has hosted Faith Climate Action Day since 2020, bringing religious communities into environmental stewardship conversations at the State House. Interfaith can use the story to show climate action as a human bridge between science, worship, and public life.",
+          "why_could_go_viral": "It makes climate action feel less like policy paperwork and more like people of faith showing up together.",
+          "lesson": "Interfaith sustainability works best when shared values become visible public action.",
+          "platform_hint": "instagram",
+          "published_at": "2026-02-22",
+          "source_urls": [
+            "https://vermontbiz.com/news/2026/february/22/faith-climate-action-day-shortens-distance-between-science-religion-state"
+          ]
+        },
+        {
+          "title": "This Church Garden Became A Small Climate Solution",
+          "person_or_subject": "Zion Lutheran Church community garden volunteers",
+          "person_descriptor": "faith community members improving a local garden",
+          "summary": "Fairbanks Climate Action Coalition's Interfaith Working Group shared that members visited Zion Lutheran Church's community garden after a mini-grant-supported upgrade. The story is useful because it turns sustainability into a tangible local place, not an abstract global argument.",
+          "why_could_go_viral": "People share climate stories more when they can see the small, local action instead of only the huge global problem.",
+          "lesson": "A garden can be a better climate message than a lecture when it shows stewardship in action.",
+          "platform_hint": "instagram",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.fbxclimateaction.org/interfaith"
+          ]
+        },
+        {
+          "title": "These Faith Leaders Are Trying To Shorten The Distance Between Science And Religion",
+          "person_or_subject": "Vermont Interfaith Power and Light",
+          "person_descriptor": "faith-based environmental stewardship organization",
+          "summary": "Vermont Business Magazine described Faith Climate Action Day as an effort to shorten the distance between science and religion. The human angle is about leaders translating climate anxiety into moral language communities can act on together.",
+          "why_could_go_viral": "It names a tension people understand and resolves it through cooperation instead of conflict.",
+          "lesson": "The best interfaith content shows people crossing a divide to solve something practical.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-02-22",
+          "source_urls": [
+            "https://vermontbiz.com/news/2026/february/22/faith-climate-action-day-shortens-distance-between-science-religion-state"
+          ]
+        },
+        {
+          "title": "This Interfaith Garden Turned A Mini Grant Into Climate Proof",
+          "person_or_subject": "Fairbanks Interfaith Working Group members",
+          "person_descriptor": "faith community volunteers supporting a garden upgrade",
+          "summary": "The Fairbanks Climate Action Coalition described Interfaith Working Group members visiting Zion Lutheran Church's community garden after a mini-grant-supported upgrade. Interfaith can frame this as proof that sustainability does not always need to start with a march; sometimes it starts with soil, neighbors, and a small grant.",
+          "why_could_go_viral": "It gives people a hopeful, concrete climate action they can imagine copying in their own community.",
+          "lesson": "Small visible projects can make big values feel practical.",
+          "platform_hint": "instagram",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.fbxclimateaction.org/interfaith"
+          ]
+        },
+        {
+          "title": "This Pastor Made Climate Action Sound Like A Moral Call",
+          "person_or_subject": "Myra Brown",
+          "person_descriptor": "Spiritus Christi Church pastor speaking on interfaith climate action",
+          "summary": "Spectrum News reported on an Interfaith Climate Action summit where Pastor Myra Brown emphasized the role of faith leaders and ministry in responding to climate change. The story gives Interfaith a human voice for why sustainability belongs in spiritual and community life.",
+          "why_could_go_viral": "It turns climate from an abstract science topic into a values-based message from a recognizable community leader.",
+          "lesson": "People move when climate action is connected to the values they already practice.",
+          "platform_hint": "linkedin",
+          "published_at": "2023-05-07",
+          "source_urls": [
+            "https://spectrumlocalnews.com/nys/central-ny/news/2023/05/07/annual-interfaith-climate-action-summit-bridges-faith-and-science-to-combat-climate-change"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "Faith Climate Action Day Is The Exact Format Interfaith Can Borrow",
+          "event_or_subject": "Vermont Faith Climate Action Day",
+          "summary": "Vermont Business Magazine reported on Faith Climate Action Day bringing faith communities into climate advocacy and environmental stewardship. Interfaith can react by building a post around the format: a day where religious values become concrete climate action.",
+          "why_it_fits": "It is a live proof point that faith communities can lead sustainability conversations without sounding abstract.",
+          "urgency": "Use this month",
+          "published_at": "2026-02-22",
+          "source_urls": [
+            "https://vermontbiz.com/news/2026/february/22/faith-climate-action-day-shortens-distance-between-science-religion-state"
+          ]
+        },
+        {
+          "title": "The Religious-Environmental Movement Is Still Underrated",
+          "event_or_subject": "Bill McKibben comment on faith and climate organizing",
+          "summary": "Fairbanks Climate Action Coalition's Interfaith Working Group quotes Bill McKibben saying the religious-environmental movement may be key to confronting climate change. Interfaith can use this as a timely thought-leadership angle on why climate work needs moral communities, not only technical experts.",
+          "why_it_fits": "It gives the client a credible outside voice for why interfaith sustainability matters now.",
+          "urgency": "Evergreen but useful now",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.fbxclimateaction.org/interfaith"
+          ]
+        },
+        {
+          "title": "A Local Garden Upgrade Is A Better Climate Hook Than Another Doom Post",
+          "event_or_subject": "Zion Lutheran Church community garden upgrade",
+          "summary": "The Fairbanks Interfaith Working Group highlighted a community garden visit after a mini-grant-supported upgrade. Interfaith can piggyback with a practical content angle: show one small action, one faith community, and one visible sustainability outcome.",
+          "why_it_fits": "It matches the client's need for hopeful, practical sustainability stories rooted in community cooperation.",
+          "urgency": "Use around Earth Month and local service days",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.fbxclimateaction.org/interfaith"
+          ]
+        },
+        {
+          "title": "The Climate Story That Only Works When Faith Joins In",
+          "event_or_subject": "Faith communities entering climate policy and civic action",
+          "summary": "Vermont Business Magazine described Faith Climate Action Day as shortening the distance between science and religion at the State House. That gives Interfaith a broader civic angle on how sustainability ideas become stickier when they move through trusted moral communities.",
+          "why_it_fits": "It is larger than one event and shows how faith can shape public climate behavior, not just private belief.",
+          "urgency": "Good now during climate and policy cycles",
+          "published_at": "2026-02-22",
+          "source_urls": [
+            "https://vermontbiz.com/news/2026/february/22/faith-climate-action-day-shortens-distance-between-science-religion-state"
+          ]
+        },
+        {
+          "title": "The Small Local Fix That Makes Climate Feel Possible Again",
+          "event_or_subject": "Mini-grants, gardens, and practical community resilience",
+          "summary": "The Fairbanks Interfaith Working Group highlighted a garden upgrade funded by a small grant, showing how climate action can look like food, soil, and neighborhood resilience instead of abstract speeches. Interfaith can use this as a highly shareable format for practical optimism.",
+          "why_it_fits": "It matches the brand's need for hopeful, service-driven sustainability stories that ordinary communities can copy.",
+          "urgency": "Strong around local service and Earth Month content",
+          "published_at": "2026-04-18",
+          "source_urls": [
+            "https://www.fbxclimateaction.org/interfaith"
           ]
         }
       ]

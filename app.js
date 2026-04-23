@@ -1,7 +1,7 @@
 const dashboardData = [
   {
     id: "elie-wiesel-foundation",
-    name: "Elie Wiesel Foundation",
+    name: "Ellie Wiesel Foundation",
     clientDescription:
       "A nonprofit foundation continuing Elie Wiesel's work through ethics, remembrance, education, and human dignity.",
     category: "Non-profit / education",
@@ -1521,18 +1521,92 @@ const dashboardData = [
         badge: "Evergreen"
       }
     ]
+  },
+  {
+    id: "siyata-ptt",
+    name: "Siyata PTT",
+    clientDescription:
+      "A push-to-talk communications company for first responders, field teams, security, logistics, and mission-critical operations.",
+    socialLinks: [],
+    theme: {
+      accent: "#0f766e",
+      accentSoft: "rgba(15, 118, 110, 0.16)",
+      highlight: "#ea580c",
+      highlightSoft: "rgba(234, 88, 12, 0.14)",
+      heroStart: "#163238",
+      heroEnd: "#0f766e",
+      orbA: "rgba(15, 118, 110, 0.24)",
+      orbB: "rgba(234, 88, 12, 0.18)"
+    }
+  },
+  {
+    id: "dentiste-toothpaste",
+    name: "Dentiste Toothpaste",
+    clientDescription:
+      "An oral-care brand built around fresh breath, nighttime routines, confidence, relationships, and everyday wellness.",
+    socialLinks: [],
+    theme: {
+      accent: "#0891b2",
+      accentSoft: "rgba(8, 145, 178, 0.15)",
+      highlight: "#22c55e",
+      highlightSoft: "rgba(34, 197, 94, 0.14)",
+      heroStart: "#0f3f4a",
+      heroEnd: "#0891b2",
+      orbA: "rgba(8, 145, 178, 0.24)",
+      orbB: "rgba(34, 197, 94, 0.18)"
+    }
+  },
+  {
+    id: "africas-business-heroes",
+    name: "Africa's Business Heroes (ABH)",
+    clientDescription:
+      "An entrepreneurship initiative spotlighting African founders, small businesses, job creation, resilience, and innovation.",
+    socialLinks: [],
+    theme: {
+      accent: "#b45309",
+      accentSoft: "rgba(180, 83, 9, 0.16)",
+      highlight: "#166534",
+      highlightSoft: "rgba(22, 101, 52, 0.14)",
+      heroStart: "#3b2715",
+      heroEnd: "#b45309",
+      orbA: "rgba(180, 83, 9, 0.24)",
+      orbB: "rgba(22, 101, 52, 0.18)"
+    }
+  },
+  {
+    id: "interfaith-sustain",
+    name: "Interfaith",
+    clientDescription:
+      "A sustainability-focused interfaith organization connecting faith communities, climate action, stewardship, and practical cooperation.",
+    socialLinks: [{ label: "Website", url: "https://interfaithsustain.com/" }],
+    theme: {
+      accent: "#4d7c0f",
+      accentSoft: "rgba(77, 124, 15, 0.16)",
+      highlight: "#0e7490",
+      highlightSoft: "rgba(14, 116, 144, 0.14)",
+      heroStart: "#22351c",
+      heroEnd: "#4d7c0f",
+      orbA: "rgba(77, 124, 15, 0.24)",
+      orbB: "rgba(14, 116, 144, 0.18)"
+    }
   }
 ];
 
 const IDEA_DATE = "2026-04-23";
+const LIVE_LOAD_DELAY_MS = 350;
+const SNAPSHOT_INITIAL_HUMAN_LIMIT = 3;
+const SNAPSHOT_INITIAL_REALTIME_LIMIT = 5;
+const REALTIME_MAX_AGE_DAYS = 7;
 const state = {
   selectedClientId: dashboardData[0].id,
   liveSignalsByClient: {},
   liveRequestByClient: {},
+  liveLoadTimersByClient: {},
   liveErrorByClient: {},
   preferSnapshot: false,
   humanAppendRequestByClient: {},
   realtimeAppendRequestByClient: {},
+  ingestQueue: Promise.resolve(),
   storyFeedback: {}
 };
 
@@ -1555,6 +1629,20 @@ function currentClient() {
 
 function currentLiveRecord(client) {
   return state.liveSignalsByClient[client.id] || null;
+}
+
+function isLiveRequestPending(clientId) {
+  return ["queued", "loading"].includes(state.liveRequestByClient[clientId]);
+}
+
+function isAnyUserRequestBusy() {
+  const hasLiveLoad = Object.values(state.liveRequestByClient).some((status) =>
+    ["queued", "loading"].includes(status)
+  );
+  const hasHumanAppend = Object.values(state.humanAppendRequestByClient).includes("loading");
+  const hasRealtimeAppend = Object.values(state.realtimeAppendRequestByClient).includes("loading");
+
+  return hasLiveLoad || hasHumanAppend || hasRealtimeAppend;
 }
 
 function formatDateOnly(value) {
@@ -1678,27 +1766,112 @@ function formatPostBefore(signal) {
   return `Post before ${formatDateOnly(postBefore.toISOString())}`;
 }
 
+function isRecentRealtimeSignal(signal) {
+  const publishedAt = signal?.published_at;
+  if (!publishedAt) {
+    return false;
+  }
+
+  const publishedDate = new Date(publishedAt);
+  if (Number.isNaN(publishedDate.getTime())) {
+    return false;
+  }
+
+  return Date.now() - publishedDate.getTime() <= REALTIME_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+}
+
 function formatWhyNow(signal) {
   const published = signal?.published_at ? formatDateTime(signal.published_at) : "recently";
   const urgency = signal?.urgency ? signal.urgency.toLowerCase() : "still active";
   return `It was published ${published} and the attention window is ${urgency}, so this is still timely if the team moves now.`;
 }
 
+function formatNasDailyEventTitle(signal) {
+  const rawTitle = cleanStoryTitle(signal.title);
+  const hasStrongNasPattern =
+    /^this\s/i.test(rawTitle) &&
+    /(most|least|biggest|smallest|strangest|weirdest|quietest|loudest|fastest|slowest|dangerous|impossible|tiny|hidden|secret|changed|saved|failed|won|lost|broke|became|turned|nobody|everyone|millions|billions)/i.test(
+      rawTitle
+    );
+
+  if (hasStrongNasPattern) {
+    return rawTitle;
+  }
+
+  const subject = (signal.event_or_subject || rawTitle || "story").trim();
+  const summary = (signal.summary || "").toLowerCase();
+  const normalizedSubject = subject
+    .replace(/^(the|a|an)\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const shortSubject = shortenWords(normalizedSubject, 5);
+
+  if (!shortSubject) {
+    return rawTitle;
+  }
+
+  const templates = [
+    `The Smallest Update With The Biggest Consequences`,
+    `The Quiet Change That Could Affect Everyone`,
+    `The Weird News Everyone Will Understand Too Late`,
+    `The Most Urgent Story Nobody Is Talking About`,
+    `The Good News That Comes With A Warning`,
+    `The Boring Update That Could Affect Millions`,
+    `The Tiny Deadline That Could Become A Huge Story`,
+    `The Global Moment Hidden Inside ${shortSubject}`
+  ];
+
+  let index = Math.abs(
+    [...`${rawTitle}${subject}${signal.published_at || ""}`].reduce(
+      (total, char) => total + char.charCodeAt(0),
+      0
+    )
+  );
+
+  if (summary.includes("deadline") || summary.includes("application")) {
+    index += 6;
+  } else if (summary.includes("crisis") || summary.includes("risk") || summary.includes("warning")) {
+    index += 2;
+  } else if (summary.includes("million") || summary.includes("billion")) {
+    index += 5;
+  }
+
+  return templates[index % templates.length];
+}
+
 function renderEmptyState(container, message) {
   container.innerHTML = `<div class="empty-state">${message}</div>`;
 }
 
+function clearPendingLiveLoads() {
+  Object.values(state.liveLoadTimersByClient).forEach((timer) => clearTimeout(timer));
+  state.liveLoadTimersByClient = {};
+
+  Object.entries(state.liveRequestByClient).forEach(([clientId, status]) => {
+    if (status === "queued") {
+      state.liveRequestByClient[clientId] = "idle";
+    }
+  });
+}
+
 function renderClientTabs() {
   elements.clientTabs.innerHTML = "";
+  const isBusy = isAnyUserRequestBusy();
   dashboardData.forEach((client) => {
     const button = document.createElement("button");
     const isActive = client.id === state.selectedClientId;
     button.type = "button";
     button.className = `client-tab ${isActive ? "is-active" : ""}`;
+    button.disabled = isBusy && !isActive;
     button.setAttribute("role", "tab");
     button.setAttribute("aria-selected", isActive ? "true" : "false");
     button.innerHTML = `<span class="client-tab-title">${client.name}</span>`;
     button.addEventListener("click", () => {
+      if (state.selectedClientId === client.id || isAnyUserRequestBusy()) {
+        return;
+      }
+
+      clearPendingLiveLoads();
       state.selectedClientId = client.id;
       render();
     });
@@ -1735,11 +1908,71 @@ async function loadSnapshotSignals(clientId, upstreamError) {
   return {
     ranAt: payload.ran_at,
     warning: null,
-    humanStorySignals: result.human_story_signals || [],
-    realtimeEventSignals: result.realtime_event_signals || [],
+    humanStorySignals: (result.human_story_signals || []).slice(0, SNAPSHOT_INITIAL_HUMAN_LIMIT),
+    realtimeEventSignals: (result.realtime_event_signals || [])
+      .filter(isRecentRealtimeSignal)
+      .slice(0, SNAPSHOT_INITIAL_REALTIME_LIMIT),
     sourceMode: payload.mode || "snapshot",
     sourceNote: payload.source_note || upstreamError || "Showing sourced snapshot data."
   };
+}
+
+async function loadSnapshotSectionSignals(clientId, section) {
+  const response = await fetch("/data/real-ingestion-snapshot.json");
+  const payload = await response.json();
+
+  if (!response.ok || !payload.ok) {
+    return [];
+  }
+
+  const result = payload.results?.find((entry) => entry.client_id === clientId);
+  if (!result) {
+    return [];
+  }
+
+  return section === "human"
+    ? result.human_story_signals || []
+    : (result.realtime_event_signals || []).filter(isRecentRealtimeSignal);
+}
+
+async function getUnusedSnapshotSignals(clientId, section) {
+  const existing = collectSectionFingerprints(clientId, section);
+  const snapshotSignals = await loadSnapshotSectionSignals(clientId, section);
+  return snapshotSignals.filter((signal) => !existing.has(storyFingerprint(signal)));
+}
+
+async function topUpSignalsFromSnapshot(clientId, section, existingSignals, targetCount) {
+  if ((existingSignals || []).length >= targetCount) {
+    return existingSignals || [];
+  }
+
+  const seen = new Set((existingSignals || []).map(storyFingerprint));
+  const snapshotSignals = await loadSnapshotSectionSignals(clientId, section);
+  const extras = snapshotSignals.filter((signal) => !seen.has(storyFingerprint(signal)));
+  return [...(existingSignals || []), ...extras].slice(0, targetCount);
+}
+
+function fetchIngestPayload(clientId, options = {}) {
+  const { refresh = false } = options;
+  const refreshParam = refresh ? `&refresh=${Date.now()}` : "";
+
+  state.ingestQueue = state.ingestQueue
+    .catch(() => null)
+    .then(async () => {
+      const response = await fetch(
+        `/api/ingest?client=${encodeURIComponent(clientId)}${refreshParam}`,
+        { cache: "no-store" }
+      );
+      const payload = await response.json();
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || "Live ingestion failed");
+      }
+
+      return payload;
+    });
+
+  return state.ingestQueue;
 }
 
 async function loadLiveSignals(clientId, options = {}) {
@@ -1761,16 +1994,7 @@ async function loadLiveSignals(clientId, options = {}) {
       return;
     }
 
-    const refreshParam = forceRefresh ? `&refresh=${Date.now()}` : "";
-    const response = await fetch(
-      `/api/ingest?client=${encodeURIComponent(clientId)}${refreshParam}`,
-      { cache: "no-store" }
-    );
-    const payload = await response.json();
-
-    if (!response.ok || !payload.ok) {
-      throw new Error(payload.error || "Live ingestion failed");
-    }
+    const payload = await fetchIngestPayload(clientId, { refresh: forceRefresh });
 
     const result = payload.results?.[0];
     if (
@@ -1780,11 +2004,19 @@ async function loadLiveSignals(clientId, options = {}) {
       throw new Error(result.warning);
     }
 
+    const humanStorySignals = result?.human_story_signals || [];
+    const realtimeEventSignals = await topUpSignalsFromSnapshot(
+      clientId,
+      "realtime",
+      result?.realtime_event_signals || [],
+      5
+    );
+
     state.liveSignalsByClient[clientId] = {
       ranAt: payload.ran_at,
       warning: result?.warning || null,
-      humanStorySignals: result?.human_story_signals || [],
-      realtimeEventSignals: result?.realtime_event_signals || [],
+      humanStorySignals,
+      realtimeEventSignals,
       sourceMode: "live",
       sourceNote: "Live web ingestion from /api/ingest."
     };
@@ -1862,13 +2094,7 @@ function pickReplacement(section, clientId, candidates) {
 }
 
 async function fetchReplacementStory(clientId, section) {
-  const response = await fetch(`/api/ingest?client=${encodeURIComponent(clientId)}&refresh=${Date.now()}`, {
-    cache: "no-store"
-  });
-  const payload = await response.json();
-  if (!response.ok || !payload.ok) {
-    throw new Error(payload.error || "Could not fetch replacement");
-  }
+  const payload = await fetchIngestPayload(clientId, { refresh: true });
 
   const result = payload.results?.[0] || {};
   const candidates =
@@ -1977,20 +2203,13 @@ async function fetchMoreHumanStories(clientId) {
   }
 
   state.humanAppendRequestByClient[clientId] = "loading";
+  delete state.liveErrorByClient[clientId];
   if (state.selectedClientId === clientId) {
     render();
   }
 
   try {
-    const response = await fetch(
-      `/api/ingest?client=${encodeURIComponent(clientId)}&refresh=${Date.now()}`,
-      { cache: "no-store" }
-    );
-    const payload = await response.json();
-
-    if (!response.ok || !payload.ok) {
-      throw new Error(payload.error || "Could not fetch more human stories");
-    }
+    const payload = await fetchIngestPayload(clientId, { refresh: true });
 
     const result = payload.results?.[0];
     const existingRecord = state.liveSignalsByClient[clientId] || {
@@ -2002,13 +2221,18 @@ async function fetchMoreHumanStories(clientId) {
       sourceNote: "Live web ingestion from /api/ingest."
     };
 
+    let incomingStories = result?.human_story_signals || [];
+    if (!incomingStories.length && result?.warning) {
+      incomingStories = await getUnusedSnapshotSignals(clientId, "human");
+    }
+
     state.liveSignalsByClient[clientId] = {
       ...existingRecord,
       ranAt: payload.ran_at,
       warning: result?.warning || existingRecord.warning || null,
       humanStorySignals: mergeHumanStories(
         existingRecord.humanStorySignals || [],
-        result?.human_story_signals || []
+        incomingStories
       )
     };
     delete state.liveErrorByClient[clientId];
@@ -2028,20 +2252,13 @@ async function fetchMoreRealtimeEvents(clientId) {
   }
 
   state.realtimeAppendRequestByClient[clientId] = "loading";
+  delete state.liveErrorByClient[clientId];
   if (state.selectedClientId === clientId) {
     render();
   }
 
   try {
-    const response = await fetch(
-      `/api/ingest?client=${encodeURIComponent(clientId)}&refresh=${Date.now()}`,
-      { cache: "no-store" }
-    );
-    const payload = await response.json();
-
-    if (!response.ok || !payload.ok) {
-      throw new Error(payload.error || "Could not fetch more events");
-    }
+    const payload = await fetchIngestPayload(clientId, { refresh: true });
 
     const result = payload.results?.[0];
     const existingRecord = state.liveSignalsByClient[clientId] || {
@@ -2053,13 +2270,18 @@ async function fetchMoreRealtimeEvents(clientId) {
       sourceNote: "Live web ingestion from /api/ingest."
     };
 
+    let incomingSignals = result?.realtime_event_signals || [];
+    if (!incomingSignals.length && result?.warning) {
+      incomingSignals = await getUnusedSnapshotSignals(clientId, "realtime");
+    }
+
     state.liveSignalsByClient[clientId] = {
       ...existingRecord,
       ranAt: payload.ran_at,
       warning: result?.warning || existingRecord.warning || null,
       realtimeEventSignals: mergeRealtimeSignals(
         existingRecord.realtimeEventSignals || [],
-        result?.realtime_event_signals || []
+        incomingSignals
       )
     };
     delete state.liveErrorByClient[clientId];
@@ -2074,16 +2296,26 @@ async function fetchMoreRealtimeEvents(clientId) {
 }
 
 function ensureLiveSignals(client) {
-  if (!state.liveSignalsByClient[client.id] && state.liveRequestByClient[client.id] !== "loading") {
-    loadLiveSignals(client.id);
+  if (
+    state.liveSignalsByClient[client.id] ||
+    state.liveErrorByClient[client.id] ||
+    isLiveRequestPending(client.id)
+  ) {
+    return;
   }
+
+  state.liveRequestByClient[client.id] = "queued";
+  state.liveLoadTimersByClient[client.id] = setTimeout(() => {
+    delete state.liveLoadTimersByClient[client.id];
+    loadLiveSignals(client.id);
+  }, LIVE_LOAD_DELAY_MS);
 }
 
 function renderEvergreenList(client) {
   elements.evergreenList.innerHTML = "";
   const liveRecord = currentLiveRecord(client);
 
-  if (state.liveRequestByClient[client.id] === "loading" && !liveRecord) {
+  if (isLiveRequestPending(client.id) && !liveRecord) {
     renderEmptyState(elements.evergreenList, "Loading live human-story signals from the web...");
     return;
   }
@@ -2141,7 +2373,7 @@ function renderRealtimeList(client) {
   elements.realtimeList.innerHTML = "";
   const liveRecord = currentLiveRecord(client);
 
-  if (state.liveRequestByClient[client.id] === "loading" && !liveRecord) {
+  if (isLiveRequestPending(client.id) && !liveRecord) {
     renderEmptyState(elements.realtimeList, "Loading live event signals from the web...");
     return;
   }
@@ -2171,10 +2403,9 @@ function renderRealtimeList(client) {
     const node = elements.realtimeCardTemplate.content.cloneNode(true);
     const sourceUrl = signal.source_urls?.[0];
     node.querySelector(".result-number").textContent = String(index + 1);
-    node.querySelector(".idea-title").textContent = cleanStoryTitle(signal.title);
+    node.querySelector(".idea-title").textContent = formatNasDailyEventTitle(signal);
     node.querySelector(".idea-hook").textContent = signal.summary;
     node.querySelector(".idea-angle").textContent = `Why it fits ${client.name}: ${signal.why_it_fits}`;
-    node.querySelector(".idea-why-now-pill").textContent = signal.urgency;
     node.querySelector(".idea-deadline").textContent = formatPostBefore(signal);
     const realtimeLink = node.querySelector(".realtime-link");
     if (sourceUrl) {
@@ -2185,17 +2416,6 @@ function renderRealtimeList(client) {
     }
     node.querySelector(".idea-why").textContent = signal.why_it_fits;
     node.querySelector(".idea-why-now").textContent = formatWhyNow(signal);
-
-    const outline = node.querySelector(".idea-outline");
-    [
-      `Subject: ${signal.event_or_subject}`,
-      `Published: ${formatDateTime(signal.published_at)}`,
-      sourceUrl ? `Research start: ${sourceUrl}` : "Research start: not available"
-    ].forEach((line) => {
-      const item = document.createElement("li");
-      item.textContent = line;
-      outline.appendChild(item);
-    });
 
     bindFeedbackButtons(node, client.id, "realtime", signal);
     elements.realtimeList.appendChild(node);
@@ -2216,6 +2436,30 @@ function renderHeader(client) {
   });
 }
 
+function renderActionButtons(client) {
+  const isHumanBusy =
+    isLiveRequestPending(client.id) || state.humanAppendRequestByClient[client.id] === "loading";
+  const isRealtimeBusy =
+    isLiveRequestPending(client.id) ||
+    state.realtimeAppendRequestByClient[client.id] === "loading";
+
+  elements.fetchMoreStories.disabled = isHumanBusy;
+  elements.fetchMoreStories.textContent =
+    state.humanAppendRequestByClient[client.id] === "loading"
+      ? "Fetching more stories..."
+      : isLiveRequestPending(client.id)
+        ? "Loading stories..."
+        : "Fetch more stories";
+
+  elements.fetchMoreEvents.disabled = isRealtimeBusy;
+  elements.fetchMoreEvents.textContent =
+    state.realtimeAppendRequestByClient[client.id] === "loading"
+      ? "Fetching more events..."
+      : isLiveRequestPending(client.id)
+        ? "Loading events..."
+        : "Fetch more events";
+}
+
 function render() {
   const client = currentClient();
   applyClientTheme(client);
@@ -2224,24 +2468,26 @@ function render() {
   renderHeader(client);
   renderEvergreenList(client);
   renderRealtimeList(client);
+  renderActionButtons(client);
 }
 
 elements.fetchMoreStories.addEventListener("click", async () => {
   const client = currentClient();
-  elements.fetchMoreStories.disabled = true;
-  elements.fetchMoreStories.textContent = "Fetching...";
+  if (isLiveRequestPending(client.id) || state.humanAppendRequestByClient[client.id] === "loading") {
+    return;
+  }
   await fetchMoreHumanStories(client.id);
-  elements.fetchMoreStories.disabled = false;
-  elements.fetchMoreStories.textContent = "Fetch more stories";
 });
 
 elements.fetchMoreEvents.addEventListener("click", async () => {
   const client = currentClient();
-  elements.fetchMoreEvents.disabled = true;
-  elements.fetchMoreEvents.textContent = "Fetching...";
+  if (
+    isLiveRequestPending(client.id) ||
+    state.realtimeAppendRequestByClient[client.id] === "loading"
+  ) {
+    return;
+  }
   await fetchMoreRealtimeEvents(client.id);
-  elements.fetchMoreEvents.disabled = false;
-  elements.fetchMoreEvents.textContent = "Fetch more events";
 });
 
 render();
