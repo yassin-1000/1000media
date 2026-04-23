@@ -1,0 +1,329 @@
+{
+  "ok": true,
+  "ran_at": "2026-04-23T00:15:00+08:00",
+  "mode": "snapshot",
+  "source_note": "Sourced snapshot created on April 23, 2026 because the current OpenAI ingestion key is over quota.",
+  "results": [
+    {
+      "client_id": "elie-wiesel-foundation",
+      "client_name": "Elie Wiesel Foundation",
+      "human_story_signals": [
+        {
+          "title": "He Is Racing Time To Save Voices Before They Vanish",
+          "person_or_subject": "Jiri Kluc",
+          "person_descriptor": "29-year-old interviewer preserving Holocaust survivor testimony",
+          "summary": "The Washington Post profiled Jiri Kluc, who started volunteering with Holocaust survivors as a teenager and has now recorded about 700 testimonies across Europe, North America, and Australia. He is turning urgency into action by documenting stories before more survivors are gone.",
+          "why_could_go_viral": "It gives the audience one young person carrying a huge moral responsibility in a way that feels cinematic and urgent.",
+          "lesson": "Memory survives when someone decides preservation is a personal duty, not somebody else's job.",
+          "platform_hint": "instagram",
+          "published_at": "2026-01-27",
+          "source_urls": [
+            "https://www.washingtonpost.com/lifestyle/2026/01/27/holocaust-survivors-interviews-jiri-kluc/"
+          ]
+        },
+        {
+          "title": "The Boy Who Survived Babi Yar Became A Witness For Everyone Else",
+          "person_or_subject": "Michael Sidko",
+          "person_descriptor": "Holocaust survivor honored in Israel's 2026 state ceremony",
+          "summary": "The Jerusalem Post reported that Michael Sidko was a child in Kyiv when his family was caught in the events leading to Babi Yar, where he watched his mother and siblings being murdered. He survived with the help of his brother and later rebuilt his life, becoming one of the survivors placed at the center of Israel's 2026 Holocaust Memorial Day ceremony.",
+          "why_could_go_viral": "It compresses one of history's biggest horrors into a single child's survival arc that people cannot easily scroll past.",
+          "lesson": "Personal testimony makes historical scale emotionally real in a way statistics never can.",
+          "platform_hint": "instagram",
+          "published_at": "2026-04-12T10:35:00+03:00",
+          "source_urls": [
+            "https://www.jpost.com/history/article-892550"
+          ]
+        },
+        {
+          "title": "A Granddaughter Is Now Carrying Her Survivor Grandfather's Story",
+          "person_or_subject": "David Zajac and Sophie Kleinhandler",
+          "person_descriptor": "survivor and granddaughter featured in a Yom HaShoah conversation",
+          "summary": "UJA-Federation of New York is hosting a conversation where Holocaust survivor David Zajac shares his story alongside his granddaughter Sophie Kleinhandler. The framing is powerful because it shows remembrance moving from lived memory into family stewardship in real time.",
+          "why_could_go_viral": "Intergenerational storytelling makes remembrance feel alive and current instead of archived.",
+          "lesson": "The next generation does not only inherit trauma; it can inherit the duty to speak.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-04-28T18:00:00-04:00",
+          "source_urls": [
+            "https://www.ujafedny.org/event/view/young-leaders-yom-hashoah/"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "Meta Just Turned Yom HaShoah Into A Global Social Storytelling Moment",
+          "event_or_subject": "Meta's 2026 Sharing Memories remembrance project",
+          "summary": "The Jerusalem Post reported on April 15 that Meta launched the sixth edition of Sharing Memories on Instagram with the theme 'A Vanishing Generation,' translating survivor testimony into seven languages for wider reach. This gives the client a fast, platform-native angle on remembrance, testimony, and the shrinking window to hear survivors directly.",
+          "why_it_fits": "It is exactly the kind of real-time cultural moment where the client can add moral clarity and educational framing without sounding opportunistic.",
+          "urgency": "Active this week",
+          "published_at": "2026-04-15T02:51:00+03:00",
+          "source_urls": [
+            "https://www.jpost.com/israel-news/article-893026"
+          ]
+        },
+        {
+          "title": "A Dialogue Across Generations Is Already Showing The Right Creative Format",
+          "event_or_subject": "USC Shoah Foundation's Yom HaShoah program",
+          "summary": "USC Shoah Foundation said its April 13 Yom HaShoah program moved from testimony into live dialogue, bringing together a Holocaust survivor, her granddaughter, and USC students. That gives the dashboard a timely content format: less lecture, more live intergenerational conversation.",
+          "why_it_fits": "The client can respond by turning remembrance into dialogue, not just commemoration graphics.",
+          "urgency": "Strong 7-day window",
+          "published_at": "2026-04-17",
+          "source_urls": [
+            "https://sfi.usc.edu/news-events"
+          ]
+        },
+        {
+          "title": "The State Ceremony Put Survivors Back At The Center",
+          "event_or_subject": "Israel's 2026 Holocaust Memorial Day ceremony",
+          "summary": "The Jerusalem Post highlighted eight survivors selected for central roles in Israel's 2026 Holocaust Memorial Day ceremony, including torch-lighting and public testimony. This is a real-time reminder that the strongest remembrance content still begins with identifiable people, not abstract institutional messaging.",
+          "why_it_fits": "It reinforces the client's core editorial rule that history should be carried by human lives and faces.",
+          "urgency": "Use now around remembrance coverage",
+          "published_at": "2026-04-12T10:35:00+03:00",
+          "source_urls": [
+            "https://www.jpost.com/history/article-892550"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "zoomex",
+      "client_name": "Zoomex",
+      "human_story_signals": [
+        {
+          "title": "He Asked For Cash. He Was A Millionaire.",
+          "person_or_subject": "John M.",
+          "person_descriptor": "British Columbia lottery winner",
+          "summary": "People reported that John M. walked into a gas station to cash a Lotto Max ticket and only learned he had won 1 million Canadian dollars when the clerk laughed at his request for cash. He and his wife later celebrated with a barbecue and started planning trips and a possible new car.",
+          "why_could_go_viral": "The entire story happens in one ordinary retail moment, which makes the shock instantly visual and shareable.",
+          "lesson": "The best money stories start with a human reaction, not the number alone.",
+          "platform_hint": "instagram",
+          "published_at": "2026-04-21T16:10:00-04:00",
+          "source_urls": [
+            "https://people.com/man-wins-1m-lottery-prize-had-no-idea-until-asked-cash-clerk-started-laughing-11954240"
+          ]
+        },
+        {
+          "title": "She Closed Her Eyes And Pointed At $212,371",
+          "person_or_subject": "Dorothy Chester",
+          "person_descriptor": "North Carolina Cash 5 jackpot winner",
+          "summary": "People reported that Dorothy Chester said she picked her numbers by closing her eyes and pointing, then won a $212,371 jackpot and took home $152,929 after taxes. The story neatly combines luck, probability, and the surreal feeling of sudden money.",
+          "why_could_go_viral": "It turns randomness into a ridiculously simple hook that audiences instantly want to retell.",
+          "lesson": "People engage with money stories faster when chance and emotion are both obvious.",
+          "platform_hint": "instagram",
+          "published_at": "2026-04-16T19:32:00-04:00",
+          "source_urls": [
+            "https://people.com/woman-wins-200k-jackpot-by-closing-eyes-and-pointing-11951720"
+          ]
+        },
+        {
+          "title": "He Told His Family On April Fools' Day And They Still Did Not Believe Him",
+          "person_or_subject": "Perry Pendleton",
+          "person_descriptor": "70-year-old Michigan lottery winner",
+          "summary": "People reported that Perry Pendleton won $100,000 from a Super Raffle ticket, then waited until April Fools' Day to tell parts of his family. The prank twist makes it a strong human story about disbelief, windfall psychology, and what people do when good news feels too big to be real.",
+          "why_could_go_viral": "It adds an emotional fake-out to a lottery win, which is exactly the kind of twist that drives replayable storytelling.",
+          "lesson": "People remember the reveal and reaction more than the payout number.",
+          "platform_hint": "x",
+          "published_at": "2026-04-14",
+          "source_urls": [
+            "https://people.com/70-year-old-man-tells-family-lottery-win-april-fools-day-11949102"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "Michael Burry Says This Rally Can Still Rip And Still Hurt You",
+          "event_or_subject": "Michael Burry's warning about a volatile stock rally",
+          "summary": "Business Insider reported on April 20 that Michael Burry does not expect a straight-line crash after the current rally, but he does expect more new highs mixed with big drops. That makes a strong Zoomex angle on trader psychology, false certainty, and why volatility punishes emotional decision-making.",
+          "why_it_fits": "It lets Zoomex talk about risk and discipline through a recognizable market personality instead of generic trading advice.",
+          "urgency": "48-hour commentary window",
+          "published_at": "2026-04-20T14:21:00.876Z",
+          "source_urls": [
+            "https://www.businessinsider.com/big-short-michael-burry-record-stock-market-rally-crash-ai-2026-4"
+          ]
+        },
+        {
+          "title": "Crypto Losses Jumped Again. Security Is The Content Angle.",
+          "event_or_subject": "March crypto exploit losses reached $52 million",
+          "summary": "The Block reported on April 1 that crypto hacks and exploits across 20 major incidents reached $52 million in March. This gives Zoomex a clean real-time reason to post around account hygiene, trader security habits, and what users should do the minute the market turns chaotic.",
+          "why_it_fits": "Security fear is one of the fastest trust-building angles a trading brand can use when it is grounded in a real headline.",
+          "urgency": "Still hot this cycle",
+          "published_at": "2026-04-01T05:28:00-04:00",
+          "source_urls": [
+            "https://www.theblock.co/post/396010/crypto-hack-exploit-losses-52-million"
+          ]
+        },
+        {
+          "title": "Someone In Texas Is Sitting On An Unclaimed $41 Million Ticket",
+          "event_or_subject": "Unclaimed Lotto Texas jackpot sold in Mesquite",
+          "summary": "MRT reported that a winning Lotto Texas ticket worth an estimated $41 million was sold for the April 20 drawing in Mesquite, with a cash value of about $22.5 million before taxes. Zoomex can turn that into fast content about what people should do in the first 24 hours after sudden wealth.",
+          "why_it_fits": "It is a pure sudden-money headline, which maps directly to risk, behavior, and money-decision storytelling.",
+          "urgency": "Use today",
+          "published_at": "2026-04-23",
+          "source_urls": [
+            "https://www.mrt.com/news/article/lotto-texas-mesquite-jackpot-win-22219848.php"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "solana",
+      "client_name": "Solana",
+      "human_story_signals": [
+        {
+          "title": "The Woman Trying To Make Solana Feel Easy For Mastercard",
+          "person_or_subject": "Catherine Gu",
+          "person_descriptor": "Head of Product for Digital Assets at Solana Foundation",
+          "summary": "TheStreet reported that Catherine Gu is helping position the new Solana Developer Platform as an easier API-based entry point for institutions, with Mastercard, Worldpay, and Western Union among the early users. The human angle is not the protocol by itself, but the product leader trying to remove friction so real companies can actually build.",
+          "why_could_go_viral": "It gives enterprise crypto a face and a mission instead of another abstract infrastructure announcement.",
+          "lesson": "Builder stories become more compelling when they show who is removing complexity for everyone else.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-03-24T09:20:00-04:00",
+          "source_urls": [
+            "https://www.thestreet.com/crypto/innovation/solana-debuts-solana-developer-platform"
+          ]
+        },
+        {
+          "title": "Western Union Just Found A Human Use Case For Solana",
+          "person_or_subject": "Malcolm Clarke",
+          "person_descriptor": "VP Digital Assets at Western Union",
+          "summary": "TheStreet quoted Malcolm Clarke saying the Solana Developer Platform helps Western Union add an API-driven onchain layer for fiat and stablecoin flows without replacing its existing network. That makes this a strong human bridge between legacy finance operators and the next generation of blockchain rails.",
+          "why_could_go_viral": "People share enterprise tech stories more when a familiar legacy brand suddenly sounds like a builder story.",
+          "lesson": "Adoption feels real when established operators explain how new rails fit into old systems.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-03-24T09:20:00-04:00",
+          "source_urls": [
+            "https://www.thestreet.com/crypto/innovation/solana-debuts-solana-developer-platform"
+          ]
+        },
+        {
+          "title": "4,100 More Developers Picked Solana. That Is The Real Signal.",
+          "person_or_subject": "New Solana developer cohort",
+          "person_descriptor": "4,100 recently added developers across the ecosystem",
+          "summary": "Crypto Briefing reported on April 20 that Solana's developer community grew by 4,100, pushing its developer share to 23% as Ethereum's share declined. The story is really about builders choosing where they want to spend their time, which is often the most honest indicator of momentum.",
+          "why_could_go_viral": "A simple 'where builders are moving' story is easier to understand and debate than token-price content.",
+          "lesson": "Developer migration is one of the clearest leading indicators of ecosystem confidence.",
+          "platform_hint": "x",
+          "published_at": "2026-04-20",
+          "source_urls": [
+            "https://cryptobriefing.com/solanas-developer-share-rises-as-ethereums-declines/"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "Alchemy Just Put $20 Million Behind Solana Builders",
+          "event_or_subject": "Alchemy's new fund for Solana builders",
+          "summary": "TheStreet reported in April that Alchemy launched a $20 million fund dedicated to teams building on Solana. This gives the client an immediate real-time angle on founder momentum, why capital is following builders, and which kinds of projects are likely to accelerate next.",
+          "why_it_fits": "The brand should be first on stories where money, tooling, and builders converge around a visible ecosystem signal.",
+          "urgency": "Hot this week",
+          "published_at": "2026-04-10",
+          "source_urls": [
+            "https://www.thestreet.com/crypto/markets/alchemy-launches-20-million-fund-for-solana-builders/"
+          ]
+        },
+        {
+          "title": "After Drift's Hack, Solana Turned Security Into A Builder Story",
+          "event_or_subject": "STRIDE security program launched after the Drift exploit",
+          "summary": "Decrypt reported on April 7 that the Solana Foundation launched the STRIDE program with 24/7 threat monitoring for DeFi protocols above $10 million TVL, plus formal verification support for larger protocols. That creates a high-trust real-time angle around infrastructure maturity, security, and how ecosystems respond after a major failure.",
+          "why_it_fits": "It helps Solana sound serious, operational, and useful when the wider market is focused on exploit fallout.",
+          "urgency": "Still relevant this week",
+          "published_at": "2026-04-07",
+          "source_urls": [
+            "https://decrypt.co/363521/solana-foundation-help-secure-defi-protocols-285-million-drift-hack/"
+          ]
+        },
+        {
+          "title": "A New Low-Latency Data Rail Just Went Public Beta",
+          "event_or_subject": "DoubleZero Edge public beta launch",
+          "summary": "The Block reported on April 16 that DoubleZero rolled out Edge, a low-latency onchain data delivery service, with Jito, Temporal, Staking Facilities, and Triton joining as participants. That gives Solana a timely infrastructure story that feels builder-first rather than price-first.",
+          "why_it_fits": "Infra launches are strongest when framed as concrete tools that make developers and operators faster.",
+          "urgency": "Fresh infra cycle",
+          "published_at": "2026-04-16T09:00:00-04:00",
+          "source_urls": [
+            "https://www.theblock.co/post/397715/doublezero-rolls-out-edge-a-low-latency-onchain-data-delivery-service-on-its-global-fiber-depin-infrastructure"
+          ]
+        }
+      ]
+    },
+    {
+      "client_id": "leverageedu",
+      "client_name": "LeverageEDU",
+      "human_story_signals": [
+        {
+          "title": "She Skipped The U.S. And Cut The Bill To Around Rs 11 Lakh A Year",
+          "person_or_subject": "Srishti Wadhwa",
+          "person_descriptor": "21-year-old Delhi student headed to the University of Amsterdam",
+          "summary": "The Economic Times profiled Srishti Wadhwa, who chose the Netherlands over the U.S. because the American path would have cost about Rs 60 lakh a year, while Amsterdam brought tuition closer to Rs 11 lakh. Her story makes the study-abroad shift feel real through one concrete family decision.",
+          "why_could_go_viral": "It turns a macro trend into a painfully clear before-and-after cost comparison.",
+          "lesson": "Students share ROI stories faster than prestige stories.",
+          "platform_hint": "instagram",
+          "published_at": "2026-03-23T11:11:22+05:30",
+          "source_urls": [
+            "https://m.economictimes.com/wealth/plan/indian-students-shift-from-us-uk-to-europe-and-asia-as-visa-hurdles-rise-and-costs-surge/articleshow/129712946.cms"
+          ]
+        },
+        {
+          "title": "Japan Beat The Big Four For This Jaipur Student",
+          "person_or_subject": "Ranvir Chaudhary",
+          "person_descriptor": "18-year-old Jaipur student choosing Japan for business school",
+          "summary": "The Economic Times reported that Ranvir Chaudhary is set to study business management at Nagoya University of Commerce and Business, with tuition around Rs 8.5 lakh a year and total costs near Rs 14 to 15 lakh. It is a strong LeverageEDU-style story because it shows students shifting toward clearer ROI and safer-feeling destinations.",
+          "why_could_go_viral": "It gives audiences a surprising country choice plus numbers that families immediately compare to their own plans.",
+          "lesson": "The next wave of study-abroad content is about practical alternatives, not default dream destinations.",
+          "platform_hint": "instagram",
+          "published_at": "2026-03-23T11:11:22+05:30",
+          "source_urls": [
+            "https://m.economictimes.com/wealth/plan/indian-students-shift-from-us-uk-to-europe-and-asia-as-visa-hurdles-rise-and-costs-surge/articleshow/129712946.cms"
+          ]
+        },
+        {
+          "title": "The First UT Austin Student In 36 Years To Win Churchill",
+          "person_or_subject": "Krithik Vishwanath",
+          "person_descriptor": "Indian-origin student heading to Cambridge on a Churchill Scholarship",
+          "summary": "Times of India reported that Krithik Vishwanath won the Churchill Scholarship for a fully funded year of master's study at Cambridge, becoming the first UT Austin student to do so in 36 years. His work in computational medicine and AI makes the story feel ambitious, modern, and directly tied to global academic mobility.",
+          "why_could_go_viral": "It combines scholarship prestige, immigrant ambition, and a crisp superlative in one headline.",
+          "lesson": "The strongest aspirational content pairs elite outcomes with a specific field and purpose.",
+          "platform_hint": "linkedin",
+          "published_at": "2026-04-03T16:19:00+05:30",
+          "source_urls": [
+            "https://timesofindia.indiatimes.com/etimes/trending/us-first-in-36-years-indian-origin-student-wins-elite-churchill-scholarship-to-cambridge/articleshow/129998588.cms"
+          ]
+        }
+      ],
+      "realtime_event_signals": [
+        {
+          "title": "Japan Just Opened 1,000 Funded Research Spots For Indian Scholars",
+          "event_or_subject": "LOTUS Programme 2026",
+          "summary": "The Economic Times reported on April 22 that Japan's LOTUS Programme 2026 opened applications for up to 1,000 Indian Master's students, PhD scholars, and researchers, with funded stays at Japanese institutions and a June 9 deadline. This is exactly the kind of timely opportunity-led content LeverageEDU can react to fast.",
+          "why_it_fits": "It is high-signal, deadline-based, and directly relevant to ambitious Indian students looking outward.",
+          "urgency": "Application window is open now",
+          "published_at": "2026-04-22T13:34:35+05:30",
+          "source_urls": [
+            "https://m.economictimes.com/nri/study/japans-lotus-2026-programme-who-can-apply-and-how-1000-indian-scholars-can-benefit/articleshow/130435647.cms"
+          ]
+        },
+        {
+          "title": "Rs 1,000 Crore In New Scholarships Just Hit The India Pipeline",
+          "event_or_subject": "Six foreign universities funding India-campus scholarships",
+          "summary": "Business Standard reported on April 13 that six foreign universities committed a combined Rs 1,000 crore scholarship pool for India-campus programmes starting in 2026. This is a strong fast-turn content moment around access, affordability, and how global education may increasingly start inside India.",
+          "why_it_fits": "It hits LeverageEDU's audience at the exact intersection of aspiration, affordability, and admissions strategy.",
+          "urgency": "Fresh admissions cycle",
+          "published_at": "2026-04-13T22:22:00+05:30",
+          "source_urls": [
+            "https://www.business-standard.com/education/news/six-foreign-universities-commit-1-000-crore-scholarship-pool-for-india-126041301151_1.html"
+          ]
+        },
+        {
+          "title": "Indian Students Are Rewriting The Default Study-Abroad Map",
+          "event_or_subject": "Shift away from the traditional Big Four destinations",
+          "summary": "The Economic Times reported that Indian students are moving away from the U.S., U.K., Canada, and Australia toward Europe and Asia because of visa friction, costs, and job uncertainty. That gives LeverageEDU a rich real-time editorial angle on smarter destination strategy instead of old default choices.",
+          "why_it_fits": "This is a market-wide behavioral shift that the brand can explain before competitors turn it into generic advice.",
+          "urgency": "Strong this month",
+          "published_at": "2026-03-23T11:11:22+05:30",
+          "source_urls": [
+            "https://m.economictimes.com/wealth/plan/indian-students-shift-from-us-uk-to-europe-and-asia-as-visa-hurdles-rise-and-costs-surge/articleshow/129712946.cms",
+            "https://m.economictimes.com/nri/study/beyond-big-four-indian-students-are-dumping-default-study-abroad-settings/articleshow/130084581.cms"
+          ]
+        }
+      ]
+    }
+  ]
+}

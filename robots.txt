@@ -1,0 +1,35 @@
+# robots.txt for Nas.com
+# Purpose: keep canonical Nas.com product/marketing/blog pages crawlable,
+# point crawlers to the canonical Nas.com sitemap, and avoid blocking
+# strategic AI/sell/shop pages during the Nas.io -> Nas.com transition.
+
+User-agent: *
+Allow: /
+
+# Non-public/internal routes.
+Disallow: /api/
+Disallow: /api/v1/
+Disallow: /_ph/
+Disallow: /ph/
+Disallow: /[communityLink]/
+
+# Legacy campaign or experiment pages. Keep these only if the pages are truly
+# not part of the new Nas.com positioning and are not needed as redirect sources.
+Disallow: /7-day-free-trial$
+Disallow: /7daybusiness$
+Disallow: /ambassador$
+Disallow: /b$
+Disallow: /b/$
+Disallow: /black-friday$
+Disallow: /business-school$
+Disallow: /digitalproducts$
+Disallow: /fast$
+Disallow: /latam$
+Disallow: /nfg/3year3day$
+Disallow: /nfg/3year3day-watch$
+Disallow: /pion$
+Disallow: /retoiaempresarial$
+Disallow: /rubyAI$
+Disallow: /workforyourself$
+
+Sitemap: https://nas.com/sitemap.xml

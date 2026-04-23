@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1000media Signal Desk</title>
+    <meta
+      name="description"
+      content="A daily content ideas dashboard for 1000media client teams."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="background-orb orb-a"></div>
+    <div class="background-orb orb-b"></div>
+    <div class="app-shell">
+      <main class="main-panel">
+        <section class="client-tabs-panel reveal">
+          <p class="eyebrow">Client</p>
+          <div id="client-tabs" class="client-tabs" role="tablist" aria-label="Client tabs"></div>
+        </section>
+
+        <section class="hero-card reveal">
+          <div class="hero-copy">
+            <h3 id="client-name"></h3>
+            <p id="client-summary"></p>
+            <div id="client-socials" class="client-socials"></div>
+          </div>
+        </section>
+
+        <section class="board-grid">
+          <section class="idea-column reveal">
+            <div class="section-header">
+              <div>
+                <h3>Human stories</h3>
+              </div>
+            </div>
+            <div id="evergreen-list" class="idea-list"></div>
+            <button id="fetch-more-stories" class="section-fetch-button" type="button">
+              Fetch more stories
+            </button>
+          </section>
+
+          <section class="idea-column reveal">
+            <div class="section-header">
+              <div>
+                <h3>Time-sensitive content</h3>
+              </div>
+            </div>
+            <div id="realtime-list" class="idea-list"></div>
+            <button id="fetch-more-events" class="section-fetch-button realtime-fetch-button" type="button">
+              Fetch more events
+            </button>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <template id="evergreen-card-template">
+      <article class="idea-card evergreen-card">
+        <div class="evergreen-head">
+          <span class="result-number"></span>
+          <div class="person-meta">
+            <span class="person-name"></span>
+            <span class="person-role"></span>
+          </div>
+        </div>
+        <h4 class="idea-title"></h4>
+        <p class="story-summary"></p>
+        <div class="story-callout">
+          <p><strong>Share angle:</strong> <span class="viral-reason"></span></p>
+          <p><strong>Lesson:</strong> <span class="story-lesson"></span></p>
+        </div>
+        <div class="feedback-actions">
+          <button class="feedback-button like-button" type="button">Like</button>
+          <button class="feedback-button dislike-button" type="button">Dislike</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="realtime-card-template">
+      <article class="idea-card realtime-card">
+        <div class="evergreen-head">
+          <span class="result-number"></span>
+          <h4 class="idea-title"></h4>
+        </div>
+        <p class="idea-hook"></p>
+        <p class="idea-angle"></p>
+        <ul class="bullet-list idea-outline"></ul>
+        <div class="idea-meta">
+          <span class="idea-why-now-pill"></span>
+        </div>
+        <p class="idea-deadline"></p>
+        <a class="story-summary-link realtime-link" target="_blank" rel="noreferrer">Learn more</a>
+        <div class="idea-reasoning">
+          <p><strong>Why it works:</strong> <span class="idea-why"></span></p>
+          <p><strong>Why now:</strong> <span class="idea-why-now"></span></p>
+        </div>
+        <div class="feedback-actions">
+          <button class="feedback-button like-button" type="button">Like</button>
+          <button class="feedback-button dislike-button" type="button">Dislike</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
