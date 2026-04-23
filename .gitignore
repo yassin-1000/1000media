@@ -2,3 +2,5 @@ data/story-feedback.json
 .env
 .env.local
 .env.*.local
+.vercel
+.env*.local
