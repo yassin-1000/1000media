@@ -80,6 +80,42 @@ Examples of strong contrast:
 - ordinary person, extraordinary result
 - local story, global meaning
 
+Even better:
+- a school that does not teach
+- garbage that does not smell
+- a tiny country doing something huge
+- a normal person doing something impossible
+- a rule that creates the opposite result
+
+If a story contains a contradiction people can understand in one second, it becomes much stronger.
+
+### 3B. Superlatives Win Attention
+
+Strong Nas Daily-style stories often contain:
+- the tallest
+- the shortest
+- the biggest
+- the smallest
+- the highest
+- the lowest
+- the most
+- the least
+- the fastest
+- the slowest
+- the first
+- the last
+- the only
+
+Prefer stories that contain:
+- an extreme number
+- an extreme size
+- an extreme comparison
+- a record
+- a first-ever
+- a last-chance moment
+
+If two stories are equally relevant, prefer the one with the sharper extreme.
+
 ### 4. Visual Potential
 
 A story is stronger if the team can imagine:
@@ -168,10 +204,78 @@ Good title qualities:
 - high-contrast
 - emotionally loaded
 - easy to say out loud
+- understandable by a 13-year-old
+
+The best titles usually do one of these four things:
+- use a superlative
+- present a contradiction
+- answer a question
+- compress a huge story into one simple line
+
+### 1A. Question Titles Are Powerful
+
+Nas Daily-style titles often work well when they answer a simple question people already want to ask.
+
+Strong opening words:
+- How
+- Why
+- What
+
+Good examples:
+- How did this student get in with no money?
+- Why is this tiny country beating everyone?
+- What makes this garbage not smell?
+- Why are students avoiding the U.S. now?
+
+Question titles work best when:
+- the question is simple
+- the answer is surprising
+- the answer matters to many people
+
+### 1B. Contradiction Titles Are Powerful
+
+Very strong titles often sound almost impossible at first.
+
+Examples:
+- The school that does not teach
+- The garbage that does not smell
+- The country getting richer by using less
+- The dentist story that is really about sleep
+
+If a contradiction is real and easy to understand, use it.
+
+### 1C. Superlative Titles Are Powerful
+
+Strong examples:
+- The biggest change nobody noticed
+- The smallest deadline with the biggest consequences
+- The highest-paying job this student almost missed
+- The most expensive mistake in crypto
+
+When possible, replace weak words with stronger extremes.
+
+Weak:
+- important
+- interesting
+- useful
+
+Stronger:
+- biggest
+- smallest
+- fastest
+- rarest
+- first
+- last
+- only
+- most
+- least
 
 Preferred patterns:
 - This student did X
 - This guy turned X into Y
+- How did X happen?
+- Why is X changing now?
+- What makes this so strange?
 - The boring update that could affect millions
 - The good news that comes with a warning
 - The smallest deadline with the biggest consequences
@@ -198,6 +302,31 @@ The summary should read like:
 - a concise content brief
 - not a Wikipedia entry
 - not a newsroom transcript
+
+### 2A. Keep It At 8th Grade Level
+
+Use language that is:
+- simple
+- clear
+- spoken
+- direct
+
+Assume the audience should understand the story in one fast read.
+
+Prefer:
+- simple words over technical words
+- short sentences over long sentences
+- one clear idea per sentence
+- active voice over passive voice
+
+Avoid:
+- jargon
+- consultant language
+- academic phrasing
+- long dependent clauses
+- complicated explanations that kill momentum
+
+If a 13-year-old cannot understand it quickly, rewrite it.
 
 ### 3. Present The Hook, Not Just The Facts
 
@@ -238,6 +367,23 @@ Use a tone that feels:
 - cinematic
 - simple
 - smart without sounding academic
+- emotionally open
+- exciting without sounding fake
+
+The writing should make people feel:
+- invited in
+- curious
+- united around a shared human reaction
+- excited to tell the story to someone else
+
+Whenever possible, frame stories in a way that brings people together around:
+- admiration
+- hope
+- shared surprise
+- shared humanity
+- common curiosity
+
+Do not write in a divisive, cynical, or cold way unless the story absolutely demands it.
 
 Do not sound:
 - robotic
@@ -253,6 +399,10 @@ Before returning a story, ask:
 - Can I picture the first shot?
 - Is there a person, conflict, or twist?
 - Is this actually fresh?
+- Is the title strong enough to sound like a video, not an article?
+- Does the wording feel simple enough for an 8th grader?
+- Does it contain a superlative, contradiction, or sharp question when possible?
+- Does it make people feel more connected, curious, or excited?
 - Is this strong enough to make a creator say “we should post this today”?
 
 If the answer is no, do not show the story.
