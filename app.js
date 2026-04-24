@@ -1952,17 +1952,29 @@ async function topUpSignalsFromSnapshot(clientId, section, existingSignals, targ
   return [...(existingSignals || []), ...extras].slice(0, targetCount);
 }
 
+function buildIngestUrl(clientId, options = {}) {
+  const params = new URLSearchParams({ client: clientId });
+
+  if (options.refresh) {
+    params.set("refresh", String(Date.now()));
+  }
+
+  if (options.exclude?.length) {
+    params.set("exclude", JSON.stringify(options.exclude));
+  }
+
+  return `/api/ingest?${params.toString()}`;
+}
+
 function fetchIngestPayload(clientId, options = {}) {
-  const { refresh = false } = options;
-  const refreshParam = refresh ? `&refresh=${Date.now()}` : "";
+  const { refresh = false, exclude = [] } = options;
 
   state.ingestQueue = state.ingestQueue
     .catch(() => null)
     .then(async () => {
-      const response = await fetch(
-        `/api/ingest?client=${encodeURIComponent(clientId)}${refreshParam}`,
-        { cache: "no-store" }
-      );
+      const response = await fetch(buildIngestUrl(clientId, { refresh, exclude }), {
+        cache: "no-store"
+      });
       const payload = await response.json();
 
       if (!response.ok || !payload.ok) {
@@ -2094,7 +2106,10 @@ function pickReplacement(section, clientId, candidates) {
 }
 
 async function fetchReplacementStory(clientId, section) {
-  const payload = await fetchIngestPayload(clientId, { refresh: true });
+  const payload = await fetchIngestPayload(clientId, {
+    refresh: true,
+    exclude: [...collectSectionFingerprints(clientId, section)]
+  });
 
   const result = payload.results?.[0] || {};
   const candidates =
@@ -2209,7 +2224,10 @@ async function fetchMoreHumanStories(clientId) {
   }
 
   try {
-    const payload = await fetchIngestPayload(clientId, { refresh: true });
+    const payload = await fetchIngestPayload(clientId, {
+      refresh: true,
+      exclude: [...collectSectionFingerprints(clientId, "human")]
+    });
 
     const result = payload.results?.[0];
     const existingRecord = state.liveSignalsByClient[clientId] || {
@@ -2258,7 +2276,10 @@ async function fetchMoreRealtimeEvents(clientId) {
   }
 
   try {
-    const payload = await fetchIngestPayload(clientId, { refresh: true });
+    const payload = await fetchIngestPayload(clientId, {
+      refresh: true,
+      exclude: [...collectSectionFingerprints(clientId, "realtime")]
+    });
 
     const result = payload.results?.[0];
     const existingRecord = state.liveSignalsByClient[clientId] || {

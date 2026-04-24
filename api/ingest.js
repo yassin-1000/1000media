@@ -5,6 +5,7 @@ const OPENAI_API_URL = "https://api.openai.com/v1/responses";
 const OPENAI_MODEL = "gpt-4.1-mini";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const REALTIME_MAX_AGE_DAYS = 7;
+const URL_VALIDATION_TIMEOUT_MS = 6000;
 const LIVE_INGEST_FALLBACK_URL =
   process.env.LIVE_INGEST_FALLBACK_URL || "https://1000media-psi.vercel.app/api/ingest";
 const NAS_DAILY_BIBLE_PATH = path.join(__dirname, "..", "docs", "nas-daily-bible.md");
@@ -147,6 +148,7 @@ async function fetchRemoteIngestionFallback(request) {
 }
 
 async function buildPrompt(client) {
+  const excludedFingerprints = readExcludedFingerprints();
   const nasDailyBible = loadNasDailyBible();
   const seeds = client.searchSeeds.map((seed) => `- ${seed}`).join("\n");
   const guidance = client.angleGuidance.map((line) => `- ${line}`).join("\n");
@@ -159,6 +161,12 @@ async function buildPrompt(client) {
   const disliked = preferences.disliked_terms.length
     ? `Avoid patterns historically disliked by this client: ${preferences.disliked_terms.join(", ")}.`
     : `There is no historical negative feedback yet for this client.`;
+  const excluded =
+    excludedFingerprints.length > 0
+      ? `Do not return stories that match or closely repeat these already visible fingerprints: ${excludedFingerprints
+          .slice(0, 30)
+          .join(" | ")}.`
+      : `There are no request-specific exclusions.`;
 
   return [
     `You are collecting daily sourced content signals for ${client.name}.`,
@@ -179,6 +187,7 @@ async function buildPrompt(client) {
     guidance,
     liked,
     disliked,
+    excluded,
     `Return exactly 5 human_story_signals and exactly 5 realtime_event_signals.`,
     `Return only items with at least one source URL and a real publication timestamp if available.`,
     `For human_story_signals, write titles in a bold Nas Daily-style headline format.`,
@@ -197,6 +206,7 @@ async function buildPrompt(client) {
     `Realtime titles should sound like: "The Boring Update That Could Affect Millions", "The Good News That Comes With A Warning", "The Smallest Deadline With The Biggest Consequences", or "The Quiet Crisis Everyone Will Notice Too Late".`,
     `Source preference order: Reuters, AP, BBC, CNN, New York Times, Financial Times, Wall Street Journal, major local/national newsrooms, credible public RSS-style news sources, and relevant public X posts from verified reporters, institutions, founders, or agencies.`,
     `Do not rely mainly on the client's own site, conference agendas, event landing pages, or low-information promo pages.`,
+    `Do not return URLs that appear broken, missing, or likely to lead to 404 pages.`,
     `If there are not enough perfect matches in the last 24 hours, broaden slightly while keeping the match clearly useful for the client.`,
     `If a result is weakly relevant, leave it out rather than forcing it in.`
   ].join("\n");
@@ -215,6 +225,16 @@ function loadNasDailyBible() {
   }
 
   return nasDailyBibleCache;
+}
+
+function readExcludedFingerprints() {
+  try {
+    const raw = global.__currentIngestRequest?.query?.exclude || "[]";
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.map((value) => String(value || "")).filter(Boolean) : [];
+  } catch (_error) {
+    return [];
+  }
 }
 
 function extractStructuredText(payload) {
@@ -250,6 +270,95 @@ function isRecentRealtimeSignal(signal) {
 
   const maxAgeMs = REALTIME_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
   return Date.now() - publishedDate.getTime() <= maxAgeMs;
+}
+
+function normalizeSourceUrls(sourceUrls) {
+  const seen = new Set();
+  return (sourceUrls || []).filter((value) => {
+    try {
+      const normalized = new URL(value).toString();
+      if (seen.has(normalized)) {
+        return false;
+      }
+      seen.add(normalized);
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  });
+}
+
+async function isLiveUrlUsable(url) {
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(url);
+  } catch (_error) {
+    return false;
+  }
+
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    return false;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), URL_VALIDATION_TIMEOUT_MS);
+
+  try {
+    const headResponse = await fetch(parsedUrl, {
+      method: "HEAD",
+      redirect: "follow",
+      signal: controller.signal
+    });
+
+    if ([404, 410].includes(headResponse.status)) {
+      return false;
+    }
+
+    return true;
+  } catch (_error) {
+    return true;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function sanitizeSignals(runs) {
+  const sanitizeSignal = async (signal, section) => {
+    const source_urls = normalizeSourceUrls(signal.source_urls);
+    if (!source_urls.length) {
+      return null;
+    }
+
+    const primaryUrlIsUsable = await isLiveUrlUsable(source_urls[0]);
+    if (!primaryUrlIsUsable) {
+      return null;
+    }
+
+    if (section === "realtime" && !isRecentRealtimeSignal(signal)) {
+      return null;
+    }
+
+    return {
+      ...signal,
+      source_urls
+    };
+  };
+
+  const human_story_signals = (
+    await Promise.all((runs.human_story_signals || []).map((signal) => sanitizeSignal(signal, "human")))
+  ).filter(Boolean);
+
+  const realtime_event_signals = (
+    await Promise.all(
+      (runs.realtime_event_signals || []).map((signal) => sanitizeSignal(signal, "realtime"))
+    )
+  ).filter(Boolean);
+
+  return {
+    ...runs,
+    human_story_signals,
+    realtime_event_signals
+  };
 }
 
 async function dedupeSignals(clientId, runs) {
@@ -339,15 +448,19 @@ async function fetchSignalsForClient(client) {
 
   const payload = await response.json();
   const outputText = extractStructuredText(payload) || "{}";
-  return JSON.parse(outputText);
+  return sanitizeSignals(JSON.parse(outputText));
 }
 
 function shouldBypassCache(request) {
-  return Boolean(request.query?.refresh) || request.headers["cache-control"] === "no-cache";
+  return (
+    Boolean(request.query?.refresh) ||
+    Boolean(request.query?.exclude) ||
+    request.headers["cache-control"] === "no-cache"
+  );
 }
 
 async function getSignalsForClient(client, request) {
-  const cacheKey = client.id;
+  const cacheKey = `${client.id}::${request.query?.exclude || ""}`;
   const cached = responseCache.get(cacheKey);
 
   if (!shouldBypassCache(request) && cached && Date.now() - cached.createdAt < CACHE_TTL_MS) {
@@ -393,6 +506,7 @@ module.exports = async function handler(request, response) {
   }
 
   try {
+    global.__currentIngestRequest = request;
     if (shouldUseRemoteIngestionFallback(request)) {
       return sendJson(response, 200, await fetchRemoteIngestionFallback(request));
     }
@@ -416,5 +530,7 @@ module.exports = async function handler(request, response) {
       ok: false,
       error: error.message
     });
+  } finally {
+    global.__currentIngestRequest = null;
   }
 };
