@@ -1,9 +1,13 @@
+const fs = require("fs");
+const path = require("path");
+
 const OPENAI_API_URL = "https://api.openai.com/v1/responses";
 const OPENAI_MODEL = "gpt-4.1-mini";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const REALTIME_MAX_AGE_DAYS = 7;
 const LIVE_INGEST_FALLBACK_URL =
   process.env.LIVE_INGEST_FALLBACK_URL || "https://1000media-psi.vercel.app/api/ingest";
+const NAS_DAILY_BIBLE_PATH = path.join(__dirname, "..", "docs", "nas-daily-bible.md");
 const { CLIENTS } = require("../lib/client-strategies");
 const {
   getClientPreferenceSummary,
@@ -13,6 +17,7 @@ const {
 
 const responseCache = new Map();
 const inFlightRequests = new Map();
+let nasDailyBibleCache = null;
 
 const SIGNAL_SCHEMA = {
   name: "daily_ingestion_result",
@@ -142,6 +147,7 @@ async function fetchRemoteIngestionFallback(request) {
 }
 
 async function buildPrompt(client) {
+  const nasDailyBible = loadNasDailyBible();
   const seeds = client.searchSeeds.map((seed) => `- ${seed}`).join("\n");
   const guidance = client.angleGuidance.map((line) => `- ${line}`).join("\n");
   const humanStoryTargets = client.humanStoryTargets.map((target) => `- ${target}`).join("\n");
@@ -160,6 +166,9 @@ async function buildPrompt(client) {
     `Do not use the client's own website as the main source of ideas.`,
     `Prefer news articles, interviews, YouTube coverage, public profiles, and reputable reporting.`,
     `Client profile: ${client.profile}`,
+    `Use the following Nas Daily Bible as a mandatory editorial operating system for both story selection and story writing:`,
+    nasDailyBible,
+    `Use the bible to decide both which stories deserve to be shown and how every accepted story should be written, framed, and emotionally presented.`,
     `Human story targets for this client. Use these to decide what kinds of people and personal stories are relevant:`,
     humanStoryTargets,
     `Time-sensitive news targets for this client. Use these to decide what global timely news, competitor updates, cultural moments, and industry stories are relevant:`,
@@ -191,6 +200,21 @@ async function buildPrompt(client) {
     `If there are not enough perfect matches in the last 24 hours, broaden slightly while keeping the match clearly useful for the client.`,
     `If a result is weakly relevant, leave it out rather than forcing it in.`
   ].join("\n");
+}
+
+function loadNasDailyBible() {
+  if (nasDailyBibleCache) {
+    return nasDailyBibleCache;
+  }
+
+  try {
+    nasDailyBibleCache = fs.readFileSync(NAS_DAILY_BIBLE_PATH, "utf8").trim();
+  } catch (_error) {
+    nasDailyBibleCache =
+      "Nas Daily Bible file missing. Prioritize human-first, surprising, visual, high-tension stories and write them in a punchy, curiosity-driven way.";
+  }
+
+  return nasDailyBibleCache;
 }
 
 function extractStructuredText(payload) {
