@@ -1,6 +1,5 @@
-data/story-feedback.json
-.env
+.DS_Store
 .env.local
-.env.*.local
-.vercel
-.env*.local
+.vercel/
+data/content-pipeline.db
+data/story-feedback.json

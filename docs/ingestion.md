@@ -1,13 +1,13 @@
-# Daily Ingestion Setup
+# Hourly Ingestion Setup
 
-This project now includes a Vercel cron scaffold for daily signal ingestion.
+This project now includes an hourly ingestion pipeline with a local SQLite content store.
 
 ## Schedule
 
-- configured schedule: `0 16 * * *`
+- configured schedule: `0 * * * *`
 - Vercel cron timezone is always `UTC`
-- this means the function runs daily at `16:00 UTC`
-- that corresponds to `12:00 AM Asia/Singapore`
+- this means the function runs every hour on the hour in `UTC`
+- local `node server.js` also kicks off a startup ingestion run and then schedules hourly refreshes while the server is running
 
 Official Vercel docs:
 
@@ -19,7 +19,8 @@ Official Vercel docs:
 ## Endpoint
 
 - Vercel cron target: `/api/ingest`
-- local manual test path after deployment: `/api/ingest?client=zoomex`
+- dashboard read endpoint: `/api/stories?client=zoomex`
+- manual ingestion test path: `/api/ingest?client=zoomex`
 
 ## Environment variables
 
@@ -37,13 +38,23 @@ Set these in Vercel:
 For each client, the ingestion function:
 
 1. runs web search via the OpenAI Responses API
-2. looks for the last `24 hours` of human-story and real-time signals
-3. filters them through client-specific angle rules
-4. returns structured JSON with source URLs
+2. filters the results through client-specific angle rules and the Nas Daily Bible
+3. writes curated results into [content-pipeline.db](/Users/yassin/Documents/New%20project/data/content-pipeline.db)
+4. exposes those curated stories to the dashboard through `/api/stories`
 
-## Important limitation
+## Local database
 
-Likes and dislikes can now persist to Supabase when `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set.
+The hourly content pipeline uses:
+
+- schema: [sqlite-content-schema.sql](/Users/yassin/Documents/New%20project/docs/sqlite-content-schema.sql)
+- helper: [content-store.js](/Users/yassin/Documents/New%20project/lib/content-store.js)
+- database file: [content-pipeline.db](/Users/yassin/Documents/New%20project/data/content-pipeline.db)
+
+The dashboard now reads curated stories from SQLite instead of hitting live web search on every click.
+
+## Likes and dislikes
+
+Likes and dislikes still persist to Supabase when `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set.
 
 To create the feedback tables in Supabase:
 

@@ -1955,30 +1955,45 @@ async function topUpSignalsFromSnapshot(clientId, section, existingSignals, targ
 function buildIngestUrl(clientId, options = {}) {
   const params = new URLSearchParams({ client: clientId });
 
-  if (options.refresh) {
-    params.set("refresh", String(Date.now()));
+  if (options.section) {
+    params.set("section", options.section);
+  }
+
+  if (options.limit) {
+    params.set("limit", String(options.limit));
+  }
+
+  if (options.humanLimit) {
+    params.set("human_limit", String(options.humanLimit));
+  }
+
+  if (options.realtimeLimit) {
+    params.set("realtime_limit", String(options.realtimeLimit));
   }
 
   if (options.exclude?.length) {
     params.set("exclude", JSON.stringify(options.exclude));
   }
 
-  return `/api/ingest?${params.toString()}`;
+  return `/api/stories?${params.toString()}`;
 }
 
 function fetchIngestPayload(clientId, options = {}) {
-  const { refresh = false, exclude = [] } = options;
+  const { section = null, limit = null, humanLimit = 5, realtimeLimit = 5, exclude = [] } = options;
 
   state.ingestQueue = state.ingestQueue
     .catch(() => null)
     .then(async () => {
-      const response = await fetch(buildIngestUrl(clientId, { refresh, exclude }), {
+      const response = await fetch(
+        buildIngestUrl(clientId, { section, limit, humanLimit, realtimeLimit, exclude }),
+        {
         cache: "no-store"
-      });
+        }
+      );
       const payload = await response.json();
 
       if (!response.ok || !payload.ok) {
-        throw new Error(payload.error || "Live ingestion failed");
+        throw new Error(payload.error || "Story database request failed");
       }
 
       return payload;
@@ -2006,7 +2021,10 @@ async function loadLiveSignals(clientId, options = {}) {
       return;
     }
 
-    const payload = await fetchIngestPayload(clientId, { refresh: forceRefresh });
+    const payload = await fetchIngestPayload(clientId, {
+      humanLimit: 5,
+      realtimeLimit: 5
+    });
 
     const result = payload.results?.[0];
     if (
@@ -2016,7 +2034,12 @@ async function loadLiveSignals(clientId, options = {}) {
       throw new Error(result.warning);
     }
 
-    const humanStorySignals = result?.human_story_signals || [];
+    const humanStorySignals = await topUpSignalsFromSnapshot(
+      clientId,
+      "human",
+      result?.human_story_signals || [],
+      5
+    );
     const realtimeEventSignals = await topUpSignalsFromSnapshot(
       clientId,
       "realtime",
@@ -2029,8 +2052,8 @@ async function loadLiveSignals(clientId, options = {}) {
       warning: result?.warning || null,
       humanStorySignals,
       realtimeEventSignals,
-      sourceMode: "live",
-      sourceNote: "Live web ingestion from /api/ingest."
+      sourceMode: result?.source_mode || "database",
+      sourceNote: result?.source_note || "Curated stories loaded from /api/stories."
     };
     delete state.liveErrorByClient[clientId];
   } catch (error) {
@@ -2055,7 +2078,7 @@ async function loadLiveSignals(clientId, options = {}) {
 function storyFingerprint(story) {
   return [
     cleanStoryTitle(story.title || ""),
-    story.person_or_subject || "",
+    story.person_or_subject || story.event_or_subject || "",
     (story.source_urls || []).join("|")
   ]
     .join("::")
@@ -2107,7 +2130,8 @@ function pickReplacement(section, clientId, candidates) {
 
 async function fetchReplacementStory(clientId, section) {
   const payload = await fetchIngestPayload(clientId, {
-    refresh: true,
+    section,
+    limit: 1,
     exclude: [...collectSectionFingerprints(clientId, section)]
   });
 
@@ -2225,7 +2249,8 @@ async function fetchMoreHumanStories(clientId) {
 
   try {
     const payload = await fetchIngestPayload(clientId, {
-      refresh: true,
+      section: "human",
+      limit: 5,
       exclude: [...collectSectionFingerprints(clientId, "human")]
     });
 
@@ -2277,7 +2302,8 @@ async function fetchMoreRealtimeEvents(clientId) {
 
   try {
     const payload = await fetchIngestPayload(clientId, {
-      refresh: true,
+      section: "realtime",
+      limit: 5,
       exclude: [...collectSectionFingerprints(clientId, "realtime")]
     });
 

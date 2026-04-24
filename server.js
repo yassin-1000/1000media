@@ -34,6 +34,9 @@ const HOST = "127.0.0.1";
 const ROOT = __dirname;
 const ingestHandler = require("./api/ingest");
 const feedbackHandler = require("./api/feedback");
+const storiesHandler = require("./api/stories");
+const { initializeContentStore } = require("./lib/content-store");
+const { CLIENTS } = require("./lib/client-strategies");
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -43,6 +46,55 @@ const MIME_TYPES = {
   ".txt": "text/plain; charset=utf-8",
   ".svg": "image/svg+xml"
 };
+
+initializeContentStore();
+
+async function runLocalHourlyIngestion(triggeredBy = "local_scheduler") {
+  try {
+    console.log(`[ingestion] starting ${triggeredBy} run`);
+    await ingestHandler.runIngestionForClients(
+      CLIENTS,
+      {
+        method: "GET",
+        query: {},
+        headers: {}
+      },
+      {
+        persist: true,
+        triggeredBy
+      }
+    );
+    console.log(`[ingestion] completed ${triggeredBy} run`);
+  } catch (error) {
+    console.error(`[ingestion] ${triggeredBy} run failed:`, error.message);
+  }
+}
+
+function scheduleLocalHourlyIngestion() {
+  if (process.env.VERCEL) {
+    return;
+  }
+
+  setTimeout(() => {
+    runLocalHourlyIngestion("startup");
+  }, 500);
+
+  const hourMs = 60 * 60 * 1000;
+  const now = new Date();
+  const nextHour = new Date(now);
+  nextHour.setMinutes(0, 0, 0);
+  nextHour.setHours(nextHour.getHours() + 1);
+  const delay = Math.max(1000, nextHour.getTime() - now.getTime());
+
+  setTimeout(() => {
+    runLocalHourlyIngestion("hourly");
+    setInterval(() => {
+      runLocalHourlyIngestion("hourly");
+    }, hourMs);
+  }, delay);
+}
+
+scheduleLocalHourlyIngestion();
 
 function sendFile(res, filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -72,6 +124,11 @@ const server = http.createServer((req, res) => {
   if (requestUrl.pathname === "/api/feedback") {
     req.query = Object.fromEntries(requestUrl.searchParams.entries());
     return feedbackHandler(req, res);
+  }
+
+  if (requestUrl.pathname === "/api/stories") {
+    req.query = Object.fromEntries(requestUrl.searchParams.entries());
+    return storiesHandler(req, res);
   }
 
   const safePath = path.normalize(requestPath).replace(/^(\.\.[/\\])+/, "");

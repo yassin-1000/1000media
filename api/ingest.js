@@ -15,6 +15,12 @@ const {
   listRejectedFingerprints,
   storyFingerprint
 } = require("../lib/feedback-store");
+const {
+  createRetrievalRun,
+  finishRetrievalRun,
+  initializeContentStore,
+  upsertStoriesForClient
+} = require("../lib/content-store");
 
 const responseCache = new Map();
 const inFlightRequests = new Map();
@@ -124,6 +130,10 @@ function shouldUseRemoteIngestionFallback(request) {
   return Boolean(!process.env.OPENAI_API_KEY && !process.env.VERCEL && request.query?.client);
 }
 
+function shouldUseRemoteIngestionForLocalRun() {
+  return Boolean(!process.env.OPENAI_API_KEY && !process.env.VERCEL);
+}
+
 async function fetchRemoteIngestionFallback(request) {
   const url = new URL(LIVE_INGEST_FALLBACK_URL);
   Object.entries(request.query || {}).forEach(([key, value]) => {
@@ -145,6 +155,16 @@ async function fetchRemoteIngestionFallback(request) {
     source_note:
       "Local OPENAI_API_KEY is not set, so localhost used the live Vercel ingestion endpoint."
   };
+}
+
+async function fetchRemoteIngestionForClient(clientId, request) {
+  return fetchRemoteIngestionFallback({
+    ...request,
+    query: {
+      ...(request.query || {}),
+      client: clientId
+    }
+  });
 }
 
 async function buildPrompt(client) {
@@ -487,6 +507,90 @@ async function getSignalsForClient(client, request) {
   return requestPromise;
 }
 
+async function runIngestionForClients(selectedClients, request, options = {}) {
+  const shouldPersist = options.persist !== false;
+  const triggeredBy = options.triggeredBy || "manual";
+  let retrievalRunId = null;
+
+  if (shouldPersist) {
+    initializeContentStore();
+    retrievalRunId = createRetrievalRun({
+      triggeredBy,
+      clientScope:
+        selectedClients.length === CLIENTS.length
+          ? "all"
+          : selectedClients.map((client) => client.id).join(","),
+      notes: "Curated web ingestion run"
+    });
+  }
+
+  try {
+    const runs = [];
+
+    for (const client of selectedClients) {
+      let result;
+
+      if (shouldUseRemoteIngestionFallback(request) || shouldUseRemoteIngestionForLocalRun()) {
+        const remotePayload = await fetchRemoteIngestionForClient(client.id, request);
+        result = remotePayload.results?.[0] || {
+          client_id: client.id,
+          client_name: client.name,
+          human_story_signals: [],
+          realtime_event_signals: [],
+          warning: remotePayload.error || "Remote ingestion returned no result"
+        };
+      } else {
+        result = await getSignalsForClient(client, request);
+      }
+
+      const curated = await dedupeSignals(client.id, {
+        ...result,
+        client_id: client.id,
+        client_name: client.name
+      });
+
+      if (shouldPersist) {
+        upsertStoriesForClient({
+          clientId: curated.client_id,
+          clientName: curated.client_name,
+          section: "human",
+          stories: curated.human_story_signals || [],
+          retrievalRunId
+        });
+
+        upsertStoriesForClient({
+          clientId: curated.client_id,
+          clientName: curated.client_name,
+          section: "realtime",
+          stories: curated.realtime_event_signals || [],
+          retrievalRunId
+        });
+      }
+
+      runs.push(curated);
+    }
+
+    if (shouldPersist) {
+      finishRetrievalRun(retrievalRunId, "completed", `Processed ${runs.length} client(s)`);
+    }
+
+    return {
+      ok: true,
+      ran_at: new Date().toISOString(),
+      schedule_note:
+        "This endpoint now writes curated results into the local SQLite store before the dashboard reads them.",
+      clients_processed: selectedClients.map((client) => client.id),
+      results: runs
+    };
+  } catch (error) {
+    if (shouldPersist) {
+      finishRetrievalRun(retrievalRunId, "failed", error.message);
+    }
+
+    throw error;
+  }
+}
+
 module.exports = async function handler(request, response) {
   if (request.method !== "GET") {
     return sendJson(response, 405, { ok: false, error: "Method not allowed" });
@@ -507,24 +611,12 @@ module.exports = async function handler(request, response) {
 
   try {
     global.__currentIngestRequest = request;
-    if (shouldUseRemoteIngestionFallback(request)) {
-      return sendJson(response, 200, await fetchRemoteIngestionFallback(request));
-    }
-
-    const runs = [];
-    for (const client of selectedClients) {
-      const result = await getSignalsForClient(client, request);
-      runs.push(await dedupeSignals(client.id, result));
-    }
-
-    return sendJson(response, 200, {
-      ok: true,
-      ran_at: new Date().toISOString(),
-      schedule_note:
-        "This endpoint is designed for Vercel Cron. Persist the results into a database before wiring the dashboard to live ingestion.",
-      clients_processed: selectedClients.map((client) => client.id),
-      results: runs
+    const payload = await runIngestionForClients(selectedClients, request, {
+      persist: true,
+      triggeredBy: request.query?.client ? "manual" : "cron"
     });
+
+    return sendJson(response, 200, payload);
   } catch (error) {
     return sendJson(response, 500, {
       ok: false,
@@ -534,3 +626,5 @@ module.exports = async function handler(request, response) {
     global.__currentIngestRequest = null;
   }
 };
+
+module.exports.runIngestionForClients = runIngestionForClients;
