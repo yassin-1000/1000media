@@ -1,13 +1,19 @@
-# Hourly Ingestion Setup
+# Ingestion Setup
 
-This project now includes an hourly ingestion pipeline with a local SQLite content store.
+This project includes a local hourly ingestion pipeline plus a Vercel production cron configuration.
 
 ## Schedule
 
-- configured schedule: `0 * * * *`
+- configured Vercel schedule: `0 16 * * *`
 - Vercel cron timezone is always `UTC`
-- this means the function runs every hour on the hour in `UTC`
+- this means the function runs daily at `16:00 UTC`
+- that corresponds to `12:00 AM Asia/Singapore`
 - local `node server.js` also kicks off a startup ingestion run and then schedules hourly refreshes while the server is running
+
+Why daily on Vercel:
+
+- Vercel Hobby allows daily cron jobs, not hourly cron jobs
+- to run hourly in production, the project needs a Pro plan or an external scheduler
 
 Official Vercel docs:
 

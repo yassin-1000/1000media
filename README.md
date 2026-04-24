@@ -1,6 +1,6 @@
 # 1000media Content Ideas Dashboard
 
-This repo now includes a working browser dashboard you can run on `localhost` and deploy to `Vercel`, backed by an hourly ingestion pipeline and a local SQLite content database.
+This repo now includes a working browser dashboard you can run on `localhost` and deploy to `Vercel`, backed by a local SQLite content database and scheduled ingestion.
 
 ## Open the dashboard locally
 
@@ -21,9 +21,9 @@ http://127.0.0.1:3000
 - multi-client tabs
 - human stories and time-sensitive content
 - likes/dislikes with feedback persistence
-- hourly ingestion into a local SQLite store
+- local hourly ingestion into a local SQLite store
 - dashboard reads curated stories from the database
-- Vercel cron support for production refreshes
+- Vercel cron support for production refreshes on supported plans
 
 Main app files:
 
