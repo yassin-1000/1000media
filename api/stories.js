@@ -74,7 +74,45 @@ module.exports = async function handler(request, response) {
   }
 
   try {
-    initializeContentStore();
+    try {
+      initializeContentStore();
+    } catch (error) {
+      const livePayload = await runIngestionForClients(
+        [client],
+        {
+          method: "GET",
+          query: { client: client.id, refresh: String(Date.now()) },
+          headers: { "cache-control": "no-cache" }
+        },
+        {
+          persist: false,
+          triggeredBy: "stories_live_fallback"
+        }
+      );
+
+      const liveResult = livePayload.results?.[0] || {
+        client_id: client.id,
+        client_name: client.name,
+        human_story_signals: [],
+        realtime_event_signals: [],
+        warning: error.message
+      };
+
+      return sendJson(response, 200, {
+        ok: true,
+        ran_at: new Date().toISOString(),
+        latest_retrieval_run: null,
+        results: [
+          {
+            ...liveResult,
+            source_mode: "live-fallback",
+            source_note:
+              "SQLite is unavailable in this environment, so stories are being served from live ingestion.",
+            warning: livePayload.storage_warning || liveResult.warning || null
+          }
+        ]
+      });
+    }
 
     const exclude = parseExclude(request.query?.exclude);
     const humanLimit = parsePositiveInt(request.query?.human_limit, 5);

@@ -508,20 +508,26 @@ async function getSignalsForClient(client, request) {
 }
 
 async function runIngestionForClients(selectedClients, request, options = {}) {
-  const shouldPersist = options.persist !== false;
+  let shouldPersist = options.persist !== false;
   const triggeredBy = options.triggeredBy || "manual";
   let retrievalRunId = null;
+  let storageWarning = null;
 
   if (shouldPersist) {
-    initializeContentStore();
-    retrievalRunId = createRetrievalRun({
-      triggeredBy,
-      clientScope:
-        selectedClients.length === CLIENTS.length
-          ? "all"
-          : selectedClients.map((client) => client.id).join(","),
-      notes: "Curated web ingestion run"
-    });
+    try {
+      initializeContentStore();
+      retrievalRunId = createRetrievalRun({
+        triggeredBy,
+        clientScope:
+          selectedClients.length === CLIENTS.length
+            ? "all"
+            : selectedClients.map((client) => client.id).join(","),
+        notes: "Curated web ingestion run"
+      });
+    } catch (error) {
+      shouldPersist = false;
+      storageWarning = `Persistent story storage is unavailable in this environment: ${error.message}`;
+    }
   }
 
   try {
@@ -578,7 +584,10 @@ async function runIngestionForClients(selectedClients, request, options = {}) {
       ok: true,
       ran_at: new Date().toISOString(),
       schedule_note:
-        "This endpoint now writes curated results into the local SQLite store before the dashboard reads them.",
+        shouldPersist
+          ? "This endpoint now writes curated results into the local SQLite store before the dashboard reads them."
+          : "This endpoint is serving live curated results without persistent SQLite storage in this environment.",
+      storage_warning: storageWarning,
       clients_processed: selectedClients.map((client) => client.id),
       results: runs
     };
