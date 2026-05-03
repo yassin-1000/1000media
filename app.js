@@ -1773,6 +1773,20 @@ function isGenericRealtimeTitle(title) {
   ].some((pattern) => pattern.test(normalized));
 }
 
+function hasNasDailyShape(title) {
+  const normalized = cleanStoryTitle(title);
+  if (!normalized) {
+    return false;
+  }
+
+  return (
+    /^(How|Why|What)\b/.test(normalized) ||
+    /\b(biggest|smallest|first|last|only|fastest|most|least|highest|lowest)\b/i.test(normalized) ||
+    /\b(but|despite|still|yet)\b/i.test(normalized) ||
+    /\b(could|changed|opened|launched|warns|warning|crisis|deadline|problem|risk)\b/i.test(normalized)
+  );
+}
+
 function tightenRealtimeTitle(text, maxWords = 14) {
   const cleaned = cleanStoryTitle(text).replace(/[.,;:!?]+$/, "").trim();
   if (!cleaned) {
@@ -1823,6 +1837,90 @@ function pickSpecificRealtimeTitle(signal) {
   }
 
   return subject || summaryLead || "";
+}
+
+function summarizeConsequence(signal) {
+  const summary = clipToSentences(signal.summary || "", 1);
+  const lowered = summary.toLowerCase();
+
+  if (/\bvisa|policy|rule|regulation|ban|law\b/.test(lowered)) {
+    return "could change student plans";
+  }
+
+  if (/\bhack|breach|security|exploit|attack|outage|offline|bug\b/.test(lowered)) {
+    return "could hit trust fast";
+  }
+
+  if (/\bscholarship|funding|grant|admission|research spot\b/.test(lowered)) {
+    return "could open a bigger door";
+  }
+
+  if (/\bhealth|oral|dental|microbiome|sleep|who\b/.test(lowered)) {
+    return "is bigger than people think";
+  }
+
+  if (/\bsolana|bitcoin|crypto|market|trader|liquidation|defi\b/.test(lowered)) {
+    return "could hit traders next";
+  }
+
+  if (/\bpublic safety|police|rescue|first responder|dispatch|emergency\b/.test(lowered)) {
+    return "could cost real seconds";
+  }
+
+  if (/\bclimate|interfaith|faith|garden|community\b/.test(lowered)) {
+    return "shows how local action scales";
+  }
+
+  if (/\beducation|student|university|school\b/.test(lowered)) {
+    return "could change where students go";
+  }
+
+  if (/\bfunding|founder|startup|accelerator\b/.test(lowered)) {
+    return "could change who wins next";
+  }
+
+  return "could matter more than it looks";
+}
+
+function nasDailyTitleFromSpecifics(signal) {
+  const subject = tightenRealtimeTitle(signal.event_or_subject || "", 12);
+  const consequence = summarizeConsequence(signal);
+  const normalizedSubject = cleanStoryTitle(subject);
+  const loweredSubject = normalizedSubject.toLowerCase();
+
+  if (!normalizedSubject) {
+    return "";
+  }
+
+  if (/^(How|Why|What)\b/.test(normalizedSubject)) {
+    return normalizedSubject;
+  }
+
+  if (/\bvisa|policy|rule|regulation|ban|law\b/.test(loweredSubject)) {
+    return `The policy shift that ${consequence}`;
+  }
+
+  if (/\boutage|offline|bug|exploit|hack|breach|security\b/.test(loweredSubject)) {
+    return `${normalizedSubject}: The problem builders cannot ignore`;
+  }
+
+  if (/\bscholarship|funding|grant|admission|research\b/.test(loweredSubject)) {
+    return `${normalizedSubject}: The opening students should not miss`;
+  }
+
+  if (/\bwho|report|survey|study|research\b/.test(loweredSubject)) {
+    return `${normalizedSubject}: The report people will feel in real life`;
+  }
+
+  if (/\bbitcoin|solana|crypto|market|token|defi|wallet\b/.test(loweredSubject)) {
+    return `${normalizedSubject}: Why traders should care now`;
+  }
+
+  if (/\bpublic safety|police|rescue|first responder|dispatch|emergency\b/.test(loweredSubject)) {
+    return `${normalizedSubject}: The upgrade that could cost or save seconds`;
+  }
+
+  return `${normalizedSubject}: The small shift that ${consequence}`;
 }
 
 function formatHumanStoryTitle(story) {
@@ -1978,12 +2076,13 @@ function formatNasDailyEventTitle(signal) {
   if (
     rawTitle &&
     !isGenericRealtimeTitle(rawTitle) &&
-    (!subject || (titleMatchesSubject(rawTitle, subject) && (!subjectAnchor || rawIncludesAnchor)))
+    (!subject || (titleMatchesSubject(rawTitle, subject) && (!subjectAnchor || rawIncludesAnchor))) &&
+    hasNasDailyShape(rawTitle)
   ) {
     return rawTitle;
   }
 
-  return specificFallback || rawTitle || "Live story";
+  return nasDailyTitleFromSpecifics(signal) || specificFallback || rawTitle || "Live story";
 }
 
 function renderEmptyState(container, message) {
