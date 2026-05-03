@@ -1,6 +1,7 @@
 const { CLIENTS } = require("../lib/client-strategies");
 const { listRejectedFingerprints } = require("../lib/feedback-store");
 const {
+  getContentStoreMode,
   getLatestRetrievalRun,
   initializeContentStore,
   listStories
@@ -75,7 +76,7 @@ module.exports = async function handler(request, response) {
 
   try {
     try {
-      initializeContentStore();
+      await initializeContentStore();
     } catch (error) {
       const livePayload = await runIngestionForClients(
         [client],
@@ -107,7 +108,7 @@ module.exports = async function handler(request, response) {
             ...liveResult,
             source_mode: "live-fallback",
             source_note:
-              "SQLite is unavailable in this environment, so stories are being served from live ingestion.",
+              "The persistent story store is unavailable in this environment, so stories are being served from live ingestion.",
             warning: livePayload.storage_warning || liveResult.warning || null
           }
         ]
@@ -128,7 +129,7 @@ module.exports = async function handler(request, response) {
       realtime_event_signals: [],
       warning: null,
       source_mode: "database",
-      source_note: "Curated stories loaded from the local SQLite store."
+      source_note: `Curated stories loaded from the ${getContentStoreMode()} story store.`
     };
 
     if (wantsHuman) {
@@ -180,7 +181,7 @@ module.exports = async function handler(request, response) {
       }
 
       result.source_note =
-        "Curated stories loaded from SQLite after topping up this client with a fresh ingestion run.";
+        `Curated stories loaded from the ${getContentStoreMode()} story store after topping up this client with a fresh ingestion run.`;
     }
 
     if (!result.human_story_signals.length && !result.realtime_event_signals.length) {
@@ -190,7 +191,7 @@ module.exports = async function handler(request, response) {
     return sendJson(response, 200, {
       ok: true,
       ran_at: new Date().toISOString(),
-      latest_retrieval_run: getLatestRetrievalRun(client.id),
+      latest_retrieval_run: await getLatestRetrievalRun(client.id),
       results: [result]
     });
   } catch (error) {

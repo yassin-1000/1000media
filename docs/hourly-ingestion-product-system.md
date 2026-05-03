@@ -5,21 +5,19 @@
 Build the dashboard as a 3-layer system that:
 
 - fetches fresh stories every hour
-- stores them in a local database
+- stores them in a shared database
 - curates and scores them before the team sees them
 - makes the dashboard fast because the UI reads from stored results instead of waiting on live web search
 
 This is the recommended architecture for reliability, speed, and quality control.
 
-## Recommended Local Database
+## Recommended Database
 
-Use a local SQLite database:
+Use Supabase/Postgres in production and keep SQLite only as a local fallback:
 
-- database file: `data/content-pipeline.db`
-- good for local development and prototyping
-- easy to inspect
-- fast enough for hourly ingestion
-- simple to migrate later to Supabase/Postgres if needed
+- production: shared, persistent, Vercel-compatible
+- local fallback: `data/content-pipeline.db`
+- easy to inspect during development
 
 ## System Overview
 

@@ -1694,6 +1694,137 @@ function shortenWords(text, maxWords = 9) {
   return words.slice(0, maxWords).join(" ");
 }
 
+function meaningfulTitleTokens(text) {
+  return [...new Set(
+    String(text || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter(
+        (token) =>
+          token &&
+          (token.length >= 4 || /\d/.test(token)) &&
+          ![
+            "this",
+            "that",
+            "with",
+            "from",
+            "into",
+            "will",
+            "could",
+            "should",
+            "would",
+            "story",
+            "news",
+            "update",
+            "change",
+            "changes",
+            "warning",
+            "deadline",
+            "quiet",
+            "smallest",
+            "biggest",
+            "everyone",
+            "nobody",
+            "about",
+            "after",
+            "before",
+            "scholarship",
+            "event",
+            "policy",
+            "report",
+            "week",
+            "award"
+          ].includes(token)
+      )
+  )];
+}
+
+function titleMatchesSubject(title, subject) {
+  const titleTokens = meaningfulTitleTokens(title);
+  const subjectTokens = meaningfulTitleTokens(subject);
+
+  if (!titleTokens.length || !subjectTokens.length) {
+    return false;
+  }
+
+  return subjectTokens.some((token) => titleTokens.includes(token));
+}
+
+function isGenericRealtimeTitle(title) {
+  const normalized = cleanStoryTitle(title).toLowerCase();
+  if (!normalized) {
+    return true;
+  }
+
+  return [
+    /^the good news that comes with a warning$/,
+    /^the smallest deadline with the biggest consequences$/,
+    /^the quiet crisis everyone will notice too late$/,
+    /^the boring update that could affect millions$/,
+    /^the quiet change that could affect everyone$/,
+    /^the weird news everyone will understand too late$/,
+    /^the most urgent story nobody is talking about$/,
+    /^the smallest update with the biggest consequences$/,
+    /^the tiny deadline that could become a huge story$/,
+    /^the global moment hidden inside\b/,
+    /^this .+ could become the next big story$/,
+    /^the .+ story nobody is talking about$/
+  ].some((pattern) => pattern.test(normalized));
+}
+
+function tightenRealtimeTitle(text, maxWords = 14) {
+  const cleaned = cleanStoryTitle(text).replace(/[.,;:!?]+$/, "").trim();
+  if (!cleaned) {
+    return "";
+  }
+
+  const shortened = shortenWords(cleaned, maxWords) || cleaned;
+  return shortened
+    .replace(/[.,;:!?]+$/, "")
+    .replace(/\b(and|or|with|for|from|into|recognizing|highlighting|including|about)$/i, "")
+    .trim();
+}
+
+function preferredSubjectAnchor(subject) {
+  const rawTokens = cleanStoryTitle(subject)
+    .split(/\s+/)
+    .map((token) => token.replace(/[^A-Za-z0-9]/g, ""))
+    .filter(Boolean);
+
+  const uppercaseOrNumeric = rawTokens.find(
+    (token) => /\d/.test(token) || /^[A-Z0-9]{2,}$/.test(token) || /^[A-Z][a-zA-Z0-9]+$/.test(token)
+  );
+
+  if (uppercaseOrNumeric) {
+    return uppercaseOrNumeric.toLowerCase();
+  }
+
+  const tokens = meaningfulTitleTokens(subject);
+  return tokens[0] || "";
+}
+
+function pickSpecificRealtimeTitle(signal) {
+  const subject = tightenRealtimeTitle(signal.event_or_subject || "", 14);
+  const rawSummaryLead = clipToSentences(signal.summary || "", 1);
+  const summaryLead = tightenRealtimeTitle(rawSummaryLead, 14);
+
+  if (summaryLead && subject && !rawSummaryLead.includes(",")) {
+    const subjectTokens = meaningfulTitleTokens(subject);
+    const summaryTokens = meaningfulTitleTokens(summaryLead);
+    const addsSpecifics = summaryTokens.some((token) => !subjectTokens.includes(token));
+    const startsWithSubjectWord = summaryLead
+      .toLowerCase()
+      .startsWith((subject.split(/\s+/)[0] || "").toLowerCase());
+
+    if (addsSpecifics && startsWithSubjectWord) {
+      return summaryLead;
+    }
+  }
+
+  return subject || summaryLead || "";
+}
+
 function formatHumanStoryTitle(story) {
   const rawTitle = cleanStoryTitle(story.title);
   if (/^this\s/i.test(rawTitle)) {
@@ -1780,63 +1911,79 @@ function isRecentRealtimeSignal(signal) {
   return Date.now() - publishedDate.getTime() <= REALTIME_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
 }
 
-function formatWhyNow(signal) {
-  const published = signal?.published_at ? formatDateTime(signal.published_at) : "recently";
-  const urgency = signal?.urgency ? signal.urgency.toLowerCase() : "still active";
-  return `It was published ${published} and the attention window is ${urgency}, so this is still timely if the team moves now.`;
+function cleanLessonText(text) {
+  return String(text || "")
+    .replace(/^lesson:\s*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function inferRealtimeLesson(signal) {
+  const context = [
+    signal.event_or_subject || "",
+    signal.summary || "",
+    signal.why_it_fits || ""
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (/\bvisa|policy|government|rule|regulation|law|ban\b/.test(context)) {
+    return "A boring policy change can quietly change someone's whole future.";
+  }
+
+  if (/\bstudent|scholarship|admission|university|study abroad|education\b/.test(context)) {
+    return "The biggest education stories are really about access.";
+  }
+
+  if (/\bhealth|medical|oral|tooth|teeth|dent|sleep|microbiome|doctor|clinic\b/.test(context)) {
+    return "Health stories spread when people can feel the change in daily life.";
+  }
+
+  if (/\bcrypto|bitcoin|solana|wallet|trader|token|defi|market|hack|security\b/.test(context)) {
+    return "Money stories go viral when the risk suddenly feels human.";
+  }
+
+  if (/\bstartup|founder|funding|investor|business|entrepreneur\b/.test(context)) {
+    return "The strongest business stories show one new door opening for real people.";
+  }
+
+  if (/\bfirst responder|dispatch|public safety|emergency|ambulance|fire|responder|communication\b/.test(context)) {
+    return "The best safety stories reveal the invisible system people rely on.";
+  }
+
+  if (/\bholocaust|survivor|memory|remembrance|wiesel|genocide|dialogue\b/.test(context)) {
+    return "History matters most when one human voice makes it impossible to ignore.";
+  }
+
+  if (/\bclimate|faith|interfaith|sustain|garden|environment\b/.test(context)) {
+    return "Big global problems feel real when one small action becomes visible.";
+  }
+
+  return "The best viral news stories are the ones that quickly show what changes for people.";
+}
+
+function formatRealtimeLesson(signal) {
+  return cleanLessonText(signal?.lesson) || inferRealtimeLesson(signal);
 }
 
 function formatNasDailyEventTitle(signal) {
   const rawTitle = cleanStoryTitle(signal.title);
-  const hasStrongNasPattern =
-    /^this\s/i.test(rawTitle) &&
-    /(most|least|biggest|smallest|strangest|weirdest|quietest|loudest|fastest|slowest|dangerous|impossible|tiny|hidden|secret|changed|saved|failed|won|lost|broke|became|turned|nobody|everyone|millions|billions)/i.test(
-      rawTitle
-    );
+  const subject = cleanStoryTitle(signal.event_or_subject || "");
+  const specificFallback = pickSpecificRealtimeTitle(signal);
+  const subjectAnchor = preferredSubjectAnchor(subject);
+  const rawIncludesAnchor = subjectAnchor
+    ? meaningfulTitleTokens(rawTitle).includes(subjectAnchor)
+    : false;
 
-  if (hasStrongNasPattern) {
+  if (
+    rawTitle &&
+    !isGenericRealtimeTitle(rawTitle) &&
+    (!subject || (titleMatchesSubject(rawTitle, subject) && (!subjectAnchor || rawIncludesAnchor)))
+  ) {
     return rawTitle;
   }
 
-  const subject = (signal.event_or_subject || rawTitle || "story").trim();
-  const summary = (signal.summary || "").toLowerCase();
-  const normalizedSubject = subject
-    .replace(/^(the|a|an)\s+/i, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  const shortSubject = shortenWords(normalizedSubject, 5);
-
-  if (!shortSubject) {
-    return rawTitle;
-  }
-
-  const templates = [
-    `The Smallest Update With The Biggest Consequences`,
-    `The Quiet Change That Could Affect Everyone`,
-    `The Weird News Everyone Will Understand Too Late`,
-    `The Most Urgent Story Nobody Is Talking About`,
-    `The Good News That Comes With A Warning`,
-    `The Boring Update That Could Affect Millions`,
-    `The Tiny Deadline That Could Become A Huge Story`,
-    `The Global Moment Hidden Inside ${shortSubject}`
-  ];
-
-  let index = Math.abs(
-    [...`${rawTitle}${subject}${signal.published_at || ""}`].reduce(
-      (total, char) => total + char.charCodeAt(0),
-      0
-    )
-  );
-
-  if (summary.includes("deadline") || summary.includes("application")) {
-    index += 6;
-  } else if (summary.includes("crisis") || summary.includes("risk") || summary.includes("warning")) {
-    index += 2;
-  } else if (summary.includes("million") || summary.includes("billion")) {
-    index += 5;
-  }
-
-  return templates[index % templates.length];
+  return specificFallback || rawTitle || "Live story";
 }
 
 function renderEmptyState(container, message) {
@@ -2449,8 +2596,9 @@ function renderRealtimeList(client) {
   signals.forEach((signal, index) => {
     const node = elements.realtimeCardTemplate.content.cloneNode(true);
     const sourceUrl = signal.source_urls?.[0];
+    const nasDailyTitle = formatNasDailyEventTitle(signal);
     node.querySelector(".result-number").textContent = String(index + 1);
-    node.querySelector(".idea-title").textContent = formatNasDailyEventTitle(signal);
+    node.querySelector(".idea-title").textContent = nasDailyTitle;
     node.querySelector(".idea-hook").textContent = signal.summary;
     node.querySelector(".idea-angle").textContent = `Why it fits ${client.name}: ${signal.why_it_fits}`;
     node.querySelector(".idea-deadline").textContent = formatPostBefore(signal);
@@ -2461,8 +2609,8 @@ function renderRealtimeList(client) {
     } else {
       realtimeLink.remove();
     }
-    node.querySelector(".idea-why").textContent = signal.why_it_fits;
-    node.querySelector(".idea-why-now").textContent = formatWhyNow(signal);
+    node.querySelector(".idea-nas-title").textContent = nasDailyTitle;
+    node.querySelector(".idea-lesson").textContent = formatRealtimeLesson(signal);
 
     bindFeedbackButtons(node, client.id, "realtime", signal);
     elements.realtimeList.appendChild(node);

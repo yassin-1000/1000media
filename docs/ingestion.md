@@ -1,6 +1,6 @@
 # Ingestion Setup
 
-This project includes a local hourly ingestion pipeline plus an hourly Vercel production cron configuration.
+This project includes a Supabase-first hourly ingestion pipeline plus an hourly Vercel production cron configuration.
 
 ## Schedule
 
@@ -44,18 +44,28 @@ For each client, the ingestion function:
 
 1. runs web search via the OpenAI Responses API
 2. filters the results through client-specific angle rules and the Nas Daily Bible
-3. writes curated results into [content-pipeline.db](/Users/yassin/Documents/New%20project/data/content-pipeline.db)
+3. writes curated results into Supabase when `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are configured
 4. exposes those curated stories to the dashboard through `/api/stories`
 
-## Local database
+## Story Store
 
-The hourly content pipeline uses:
+Production story storage uses:
+
+- schema: [supabase-content-schema.sql](/Users/yassin/Documents/New%20project/docs/supabase-content-schema.sql)
+- helper: [content-store.js](/Users/yassin/Documents/New%20project/lib/content-store.js)
+
+Local development falls back to:
 
 - schema: [sqlite-content-schema.sql](/Users/yassin/Documents/New%20project/docs/sqlite-content-schema.sql)
-- helper: [content-store.js](/Users/yassin/Documents/New%20project/lib/content-store.js)
 - database file: [content-pipeline.db](/Users/yassin/Documents/New%20project/data/content-pipeline.db)
 
-The dashboard now reads curated stories from SQLite instead of hitting live web search on every click.
+The dashboard reads curated stories from the story store instead of hitting live web search on every click.
+
+To create the story tables in Supabase:
+
+1. Open the SQL editor in Supabase.
+2. Run [supabase-content-schema.sql](/Users/yassin/Documents/New%20project/docs/supabase-content-schema.sql).
+3. Redeploy or refresh the server so the content-store can initialize against Supabase.
 
 ## Likes and dislikes
 

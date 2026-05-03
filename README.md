@@ -1,6 +1,6 @@
 # 1000media Content Ideas Dashboard
 
-This repo now includes a working browser dashboard you can run on `localhost` and deploy to `Vercel`, backed by a local SQLite content database and hourly ingestion.
+This repo now includes a working browser dashboard you can run on `localhost` and deploy to `Vercel`, backed by a Supabase-first story store with local SQLite fallback during development.
 
 ## Open the dashboard locally
 
@@ -21,7 +21,7 @@ http://127.0.0.1:3000
 - multi-client tabs
 - human stories and time-sensitive content
 - likes/dislikes with feedback persistence
-- local hourly ingestion into a local SQLite store
+- hourly ingestion into the story store
 - dashboard reads curated stories from the database
 - Vercel hourly cron support for production refreshes on supported plans
 
@@ -53,6 +53,11 @@ For production ingestion, add:
 - `CRON_SECRET`
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+
+Before production story storage works, run these SQL files in Supabase:
+
+- [supabase-feedback-schema.sql](/Users/yassin/Documents/New%20project/docs/supabase-feedback-schema.sql)
+- [supabase-content-schema.sql](/Users/yassin/Documents/New%20project/docs/supabase-content-schema.sql)
 
 ## Product blueprint
 

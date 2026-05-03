@@ -47,7 +47,9 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml"
 };
 
-initializeContentStore();
+initializeContentStore().catch((error) => {
+  console.error("[content-store] initialization failed:", error.message);
+});
 
 async function runLocalHourlyIngestion(triggeredBy = "local_scheduler") {
   try {

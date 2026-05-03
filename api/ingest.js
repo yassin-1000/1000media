@@ -18,13 +18,18 @@ const {
 const {
   createRetrievalRun,
   finishRetrievalRun,
+  getContentStoreMode,
   initializeContentStore,
   upsertStoriesForClient
 } = require("../lib/content-store");
+const { normalizeRealtimeSignals } = require("../lib/realtime-title-format");
+const { getGenericTitleReason, isBlacklistedTitle } = require("../lib/title-quality");
 
 const responseCache = new Map();
 const inFlightRequests = new Map();
 let nasDailyBibleCache = null;
+const DEFAULT_OUTPUT_TOKENS = 4200;
+const RETRY_OUTPUT_TOKENS = 6200;
 
 const SIGNAL_SCHEMA = {
   name: "daily_ingestion_result",
@@ -84,6 +89,7 @@ const SIGNAL_SCHEMA = {
             "event_or_subject",
             "summary",
             "why_it_fits",
+            "lesson",
             "urgency",
             "published_at",
             "source_urls"
@@ -93,6 +99,7 @@ const SIGNAL_SCHEMA = {
             event_or_subject: { type: "string" },
             summary: { type: "string" },
             why_it_fits: { type: "string" },
+            lesson: { type: "string" },
             urgency: { type: "string" },
             published_at: { type: "string" },
             source_urls: {
@@ -212,18 +219,24 @@ async function buildPrompt(client) {
     `Return only items with at least one source URL and a real publication timestamp if available.`,
     `For human_story_signals, write titles in a bold Nas Daily-style headline format.`,
     `Human story titles should sound like: "This guy turned X into Y", "This student did X", or "This founder built X".`,
-    `Avoid markdown, quotation marks, labels, and asterisks in titles.`,
+    `Avoid markdown, quotation marks, labels, asterisks, placeholders, and generic template titles.`,
+    `Do not return titles like "This student did X", "This founder built X", "This guy did X", or any title that still contains X/Y placeholders.`,
     `For human_story_signals, summaries must stay factual and sourced; do not invent details.`,
     `For why_could_go_viral, do not be vague. Explain the exact social angle, why someone would share it, or the creative hook that could make it travel.`,
     `For human_story_signals, each summary should be 4 or 5 short sentences max.`,
     `For realtime_event_signals, include not just direct industry headlines but also adjacent-world news buckets that matter to the client: policy, regulation, medical news, government changes, consumer behavior, culture, sports, entertainment, cleaning/wellness, startup news, macro shifts, and other believable piggyback moments.`,
     `Avoid over-indexing on summits, conferences, expos, roundtables, and generic industry events unless there is a concrete announcement, policy shift, human consequence, market impact, or very clear audience takeaway.`,
     `For realtime_event_signals, every item must be from today or within the last 7 days only. If it is older than 7 days, do not include it.`,
-    `For realtime_event_signals, the title must be the suggested Nas Daily-style post title, not a dry news headline.`,
-    `Every realtime title must be highly varied and curiosity-driven. Use superlatives, contradiction, oxymoron, surprising stakes, or a counterintuitive framing.`,
-    `Avoid repeated generic title structures like "This X could become the next big story".`,
+    `For realtime_event_signals, title is the Nas Daily Title for the content idea, not the raw article headline.`,
+    `For realtime_event_signals, the title must still sound punchy, but it must explain the actual story clearly.`,
+    `Every realtime title must name the concrete subject: include the company, country, policy, product, event, person, or number in the title itself.`,
+    `Do not use vague shells like "The Good News That Comes With A Warning", "The Quiet Crisis Everyone Will Notice Too Late", "The Boring Update That Could Affect Millions", or "The Smallest Deadline With The Biggest Consequences" unless the title also names the real subject and event.`,
+    `Do not return low-information titles like "Oral Health Research", "Student Visa Policy Changes", "New Visa Rules 2026", or similar generic labels that could apply to many stories.`,
+    `Avoid repeated generic title structures and do not return multiple titles with the same pattern in one response.`,
     `Put the actual news context in the summary, including what happened and why the team should care.`,
-    `Realtime titles should sound like: "The Boring Update That Could Affect Millions", "The Good News That Comes With A Warning", "The Smallest Deadline With The Biggest Consequences", or "The Quiet Crisis Everyone Will Notice Too Late".`,
+    `For realtime_event_signals, lesson must be one simple sentence that sounds like the ending line of a strong Nas Daily video.`,
+    `The lesson should be human, memorable, written at an 8th grade level, and slightly bigger than the event itself.`,
+    `Good realtime title examples: "Japan Just Opened 1,000 Funded Research Spots For Indian Scholars", "WHO Says Only 17% Of Africa Has Essential Oral Care Access", "Cardano Wants $50 Million To Build On Bitcoin", or "A New Visa Rule Could Reshape Indian Study Abroad Plans".`,
     `Source preference order: Reuters, AP, BBC, CNN, New York Times, Financial Times, Wall Street Journal, major local/national newsrooms, credible public RSS-style news sources, and relevant public X posts from verified reporters, institutions, founders, or agencies.`,
     `Do not rely mainly on the client's own site, conference agendas, event landing pages, or low-information promo pages.`,
     `Do not return URLs that appear broken, missing, or likely to lead to 404 pages.`,
@@ -275,6 +288,44 @@ function extractStructuredText(payload) {
   }
 
   return null;
+}
+
+function extractJsonObject(text) {
+  const raw = String(text || "").trim();
+  if (!raw) {
+    return null;
+  }
+
+  const start = raw.indexOf("{");
+  const end = raw.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) {
+    return null;
+  }
+
+  return raw.slice(start, end + 1);
+}
+
+function parseStructuredPayload(payload, clientName) {
+  if (payload?.output_parsed && typeof payload.output_parsed === "object") {
+    return payload.output_parsed;
+  }
+
+  const outputText = extractStructuredText(payload) || "{}";
+  const candidates = [outputText, extractJsonObject(outputText)].filter(Boolean);
+
+  for (const candidate of candidates) {
+    try {
+      return JSON.parse(candidate);
+    } catch (_error) {
+      // keep trying recovery candidates
+    }
+  }
+
+  const reason = payload?.incomplete_details?.reason || payload?.status || "invalid_json_output";
+  const sample = outputText.slice(0, 400).replace(/\s+/g, " ");
+  throw new Error(
+    `OpenAI returned unreadable structured output for ${clientName} (${reason}). Sample: ${sample}`
+  );
 }
 
 function isRecentRealtimeSignal(signal) {
@@ -344,6 +395,11 @@ async function isLiveUrlUsable(url) {
 
 async function sanitizeSignals(runs) {
   const sanitizeSignal = async (signal, section) => {
+    const genericTitleReason = getGenericTitleReason(signal.title, section);
+    if (genericTitleReason) {
+      return null;
+    }
+
     const source_urls = normalizeSourceUrls(signal.source_urls);
     if (!source_urls.length) {
       return null;
@@ -388,6 +444,9 @@ async function dedupeSignals(clientId, runs) {
 
   const filterSignals = (signals, rejected) =>
     (signals || []).filter((signal) => {
+      if (isBlacklistedTitle(signal.title, signal.event_or_subject ? "realtime" : "human")) {
+        return false;
+      }
       const fingerprint = storyFingerprint(signal);
       if (rejected.has(fingerprint) || seen.has(fingerprint)) {
         return false;
@@ -399,13 +458,13 @@ async function dedupeSignals(clientId, runs) {
   return {
     ...runs,
     human_story_signals: filterSignals(runs.human_story_signals, humanRejected),
-    realtime_event_signals: filterSignals(runs.realtime_event_signals, realtimeRejected).filter(
-      isRecentRealtimeSignal
+    realtime_event_signals: normalizeRealtimeSignals(
+      filterSignals(runs.realtime_event_signals, realtimeRejected).filter(isRecentRealtimeSignal)
     )
   };
 }
 
-async function fetchSignalsForClient(client) {
+async function fetchSignalsForClientAttempt(client, maxOutputTokens = DEFAULT_OUTPUT_TOKENS) {
   if (!process.env.OPENAI_API_KEY) {
     return {
       client_id: client.id,
@@ -440,7 +499,7 @@ async function fetchSignalsForClient(client) {
           }
         ],
         tool_choice: "required",
-        max_output_tokens: 2200,
+        max_output_tokens: maxOutputTokens,
         text: {
           format: {
             type: "json_schema",
@@ -467,8 +526,19 @@ async function fetchSignalsForClient(client) {
   }
 
   const payload = await response.json();
-  const outputText = extractStructuredText(payload) || "{}";
-  return sanitizeSignals(JSON.parse(outputText));
+  return sanitizeSignals(parseStructuredPayload(payload, client.name));
+}
+
+async function fetchSignalsForClient(client) {
+  try {
+    return await fetchSignalsForClientAttempt(client, DEFAULT_OUTPUT_TOKENS);
+  } catch (error) {
+    if (!/unreadable structured output|max_output_tokens|incomplete/i.test(error.message)) {
+      throw error;
+    }
+
+    return fetchSignalsForClientAttempt(client, RETRY_OUTPUT_TOKENS);
+  }
 }
 
 function shouldBypassCache(request) {
@@ -515,8 +585,8 @@ async function runIngestionForClients(selectedClients, request, options = {}) {
 
   if (shouldPersist) {
     try {
-      initializeContentStore();
-      retrievalRunId = createRetrievalRun({
+      await initializeContentStore();
+      retrievalRunId = await createRetrievalRun({
         triggeredBy,
         clientScope:
           selectedClients.length === CLIENTS.length
@@ -532,52 +602,71 @@ async function runIngestionForClients(selectedClients, request, options = {}) {
 
   try {
     const runs = [];
+    const clientErrors = [];
 
     for (const client of selectedClients) {
-      let result;
+      try {
+        let result;
 
-      if (shouldUseRemoteIngestionFallback(request) || shouldUseRemoteIngestionForLocalRun()) {
-        const remotePayload = await fetchRemoteIngestionForClient(client.id, request);
-        result = remotePayload.results?.[0] || {
+        if (shouldUseRemoteIngestionFallback(request) || shouldUseRemoteIngestionForLocalRun()) {
+          const remotePayload = await fetchRemoteIngestionForClient(client.id, request);
+          result = remotePayload.results?.[0] || {
+            client_id: client.id,
+            client_name: client.name,
+            human_story_signals: [],
+            realtime_event_signals: [],
+            warning: remotePayload.error || "Remote ingestion returned no result"
+          };
+        } else {
+          result = await getSignalsForClient(client, request);
+        }
+
+        const curated = await dedupeSignals(client.id, {
+          ...result,
+          client_id: client.id,
+          client_name: client.name
+        });
+
+        if (shouldPersist) {
+          await upsertStoriesForClient({
+            clientId: curated.client_id,
+            clientName: curated.client_name,
+            section: "human",
+            stories: curated.human_story_signals || [],
+            retrievalRunId
+          });
+
+          await upsertStoriesForClient({
+            clientId: curated.client_id,
+            clientName: curated.client_name,
+            section: "realtime",
+            stories: curated.realtime_event_signals || [],
+            retrievalRunId
+          });
+        }
+
+        runs.push(curated);
+      } catch (error) {
+        clientErrors.push(`${client.id}: ${error.message}`);
+        runs.push({
           client_id: client.id,
           client_name: client.name,
           human_story_signals: [],
           realtime_event_signals: [],
-          warning: remotePayload.error || "Remote ingestion returned no result"
-        };
-      } else {
-        result = await getSignalsForClient(client, request);
-      }
-
-      const curated = await dedupeSignals(client.id, {
-        ...result,
-        client_id: client.id,
-        client_name: client.name
-      });
-
-      if (shouldPersist) {
-        upsertStoriesForClient({
-          clientId: curated.client_id,
-          clientName: curated.client_name,
-          section: "human",
-          stories: curated.human_story_signals || [],
-          retrievalRunId
-        });
-
-        upsertStoriesForClient({
-          clientId: curated.client_id,
-          clientName: curated.client_name,
-          section: "realtime",
-          stories: curated.realtime_event_signals || [],
-          retrievalRunId
+          warning: error.message
         });
       }
-
-      runs.push(curated);
     }
 
     if (shouldPersist) {
-      finishRetrievalRun(retrievalRunId, "completed", `Processed ${runs.length} client(s)`);
+      const successfulClients = runs.filter(
+        (run) => !run.warning && ((run.human_story_signals || []).length || (run.realtime_event_signals || []).length)
+      ).length;
+      const status = successfulClients > 0 ? "completed" : "failed";
+      const notes = clientErrors.length
+        ? `Processed ${runs.length} client(s); ${successfulClients} succeeded; errors: ${clientErrors.join(" | ")}`
+        : `Processed ${runs.length} client(s)`;
+      await finishRetrievalRun(retrievalRunId, status, notes);
     }
 
     return {
@@ -585,15 +674,16 @@ async function runIngestionForClients(selectedClients, request, options = {}) {
       ran_at: new Date().toISOString(),
       schedule_note:
         shouldPersist
-          ? "This endpoint now writes curated results into the local SQLite store before the dashboard reads them."
-          : "This endpoint is serving live curated results without persistent SQLite storage in this environment.",
+          ? `This endpoint writes curated results into the ${getContentStoreMode()} story store before the dashboard reads them.`
+          : "This endpoint is serving live curated results without persistent story storage in this environment.",
       storage_warning: storageWarning,
+      client_errors: clientErrors,
       clients_processed: selectedClients.map((client) => client.id),
       results: runs
     };
   } catch (error) {
     if (shouldPersist) {
-      finishRetrievalRun(retrievalRunId, "failed", error.message);
+      await finishRetrievalRun(retrievalRunId, "failed", error.message);
     }
 
     throw error;
