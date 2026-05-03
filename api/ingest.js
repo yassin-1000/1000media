@@ -17,6 +17,7 @@ const {
   listRejectedFingerprints,
   storyFingerprint
 } = require("../lib/feedback-store");
+const { passesClientStoryRelevance } = require("../lib/story-relevance");
 const {
   createRetrievalRun,
   finishRetrievalRun,
@@ -562,6 +563,10 @@ async function dedupeSignals(clientId, runs) {
 
   const filterSignals = (signals, rejected) =>
     (signals || []).filter((signal) => {
+      const section = signal.event_or_subject ? "realtime" : "human";
+      if (!passesClientStoryRelevance(clientId, section, signal)) {
+        return false;
+      }
       if (isBlacklistedTitle(signal.title, signal.event_or_subject ? "realtime" : "human")) {
         return false;
       }

@@ -2390,6 +2390,37 @@ function formatNasDailyEventTitle(signal) {
   return nasDailyTitleFromSpecifics(signal) || specificFallback || rawTitle || "Live story";
 }
 
+function ensureUniqueRealtimeTitles(signals) {
+  const used = new Set();
+
+  return (signals || []).map((signal) => {
+    const preferred = [
+      formatNasDailyEventTitle(signal),
+      cleanStoryTitle(signal.title),
+      cleanStoryTitle(signal.event_or_subject || "")
+    ].filter(Boolean);
+
+    let chosen = preferred.find((candidate) => {
+      const key = candidate.toLowerCase();
+      if (used.has(key)) {
+        return false;
+      }
+      used.add(key);
+      return true;
+    });
+
+    if (!chosen) {
+      chosen = `${formatNasDailyEventTitle(signal)}: ${cleanStoryTitle(signal.event_or_subject || "")}`.trim();
+      used.add(chosen.toLowerCase());
+    }
+
+    return {
+      ...signal,
+      title: chosen
+    };
+  });
+}
+
 function renderEmptyState(container, message) {
   container.innerHTML = `<div class="empty-state">${message}</div>`;
 }
@@ -2460,9 +2491,11 @@ async function loadSnapshotSignals(clientId, upstreamError) {
     ranAt: payload.ran_at,
     warning: null,
     humanStorySignals: (result.human_story_signals || []).slice(0, SNAPSHOT_INITIAL_HUMAN_LIMIT),
-    realtimeEventSignals: (result.realtime_event_signals || [])
-      .filter(isRecentRealtimeSignal)
-      .slice(0, SNAPSHOT_INITIAL_REALTIME_LIMIT),
+    realtimeEventSignals: ensureUniqueRealtimeTitles(
+      (result.realtime_event_signals || [])
+        .filter(isRecentRealtimeSignal)
+        .slice(0, SNAPSHOT_INITIAL_REALTIME_LIMIT)
+    ),
     sourceMode: payload.mode || "snapshot",
     sourceNote: payload.source_note || upstreamError || "Showing sourced snapshot data."
   };
@@ -2602,7 +2635,7 @@ async function loadLiveSignals(clientId, options = {}) {
       ranAt: payload.ran_at,
       warning: result?.warning || null,
       humanStorySignals,
-      realtimeEventSignals,
+      realtimeEventSignals: ensureUniqueRealtimeTitles(realtimeEventSignals),
       sourceMode: result?.source_mode || "database",
       sourceNote: result?.source_note || "Curated stories loaded from /api/stories."
     };
@@ -2769,7 +2802,7 @@ function mergeHumanStories(existingStories, incomingStories) {
     }
   });
 
-  return merged;
+  return ensureUniqueRealtimeTitles(merged);
 }
 
 function mergeRealtimeSignals(existingSignals, incomingSignals) {
