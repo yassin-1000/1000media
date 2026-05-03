@@ -6,6 +6,8 @@ const OPENAI_MODEL = "gpt-4.1-mini";
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const REALTIME_MAX_AGE_DAYS = 7;
 const URL_VALIDATION_TIMEOUT_MS = 6000;
+const SOURCE_DATE_VALIDATION_TIMEOUT_MS = 8000;
+const SOURCE_DATE_DRIFT_DAYS = 30;
 const LIVE_INGEST_FALLBACK_URL =
   process.env.LIVE_INGEST_FALLBACK_URL || "https://1000media-psi.vercel.app/api/ingest";
 const NAS_DAILY_BIBLE_PATH = path.join(__dirname, "..", "docs", "nas-daily-bible.md");
@@ -393,6 +395,102 @@ async function isLiveUrlUsable(url) {
   }
 }
 
+function parseIsoDateCandidate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date;
+}
+
+function extractSourcePublishedDateFromHtml(html) {
+  const patterns = [
+    /"datePublished"\s*:\s*"([^"]+)"/i,
+    /property=["']article:published_time["'][^>]*content=["']([^"']+)["']/i,
+    /name=["']article:published_time["'][^>]*content=["']([^"']+)["']/i,
+    /property=["']og:published_time["'][^>]*content=["']([^"']+)["']/i,
+    /<time[^>]*datetime=["']([^"']+)["']/i,
+    /"dateModified"\s*:\s*"([^"]+)"/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    const parsed = match ? parseIsoDateCandidate(match[1]) : null;
+    if (parsed) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+async function verifySourcePublishedDate(url, claimedPublishedAt) {
+  if (!claimedPublishedAt) {
+    return { ok: true, verifiedPublishedAt: null, reason: "no_claimed_date" };
+  }
+
+  const claimedDate = parseIsoDateCandidate(claimedPublishedAt);
+  if (!claimedDate) {
+    return { ok: false, verifiedPublishedAt: null, reason: "invalid_claimed_date" };
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), SOURCE_DATE_VALIDATION_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      redirect: "follow",
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "Mozilla/5.0"
+      }
+    });
+
+    if (!response.ok) {
+      return { ok: true, verifiedPublishedAt: claimedPublishedAt, reason: "html_unavailable" };
+    }
+
+    const html = await response.text();
+    const sourceDate = extractSourcePublishedDateFromHtml(html);
+    if (!sourceDate) {
+      return { ok: true, verifiedPublishedAt: claimedPublishedAt, reason: "source_date_missing" };
+    }
+
+    const ageMs = Date.now() - sourceDate.getTime();
+    const maxAgeMs = REALTIME_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+    const driftMs = Math.abs(sourceDate.getTime() - claimedDate.getTime());
+    const maxDriftMs = SOURCE_DATE_DRIFT_DAYS * 24 * 60 * 60 * 1000;
+
+    if (ageMs > maxAgeMs) {
+      return {
+        ok: false,
+        verifiedPublishedAt: sourceDate.toISOString(),
+        reason: "source_date_too_old"
+      };
+    }
+
+    if (driftMs > maxDriftMs) {
+      return {
+        ok: false,
+        verifiedPublishedAt: sourceDate.toISOString(),
+        reason: "source_date_mismatch"
+      };
+    }
+
+    return {
+      ok: true,
+      verifiedPublishedAt: sourceDate.toISOString(),
+      reason: "source_date_verified"
+    };
+  } catch (_error) {
+    return { ok: true, verifiedPublishedAt: claimedPublishedAt, reason: "source_date_fetch_failed" };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function sanitizeSignals(runs) {
   const sanitizeSignal = async (signal, section) => {
     const genericTitleReason = getGenericTitleReason(signal.title, section);
@@ -412,6 +510,19 @@ async function sanitizeSignals(runs) {
 
     if (section === "realtime" && !isRecentRealtimeSignal(signal)) {
       return null;
+    }
+
+    if (section === "realtime") {
+      const sourceDateCheck = await verifySourcePublishedDate(source_urls[0], signal.published_at);
+      if (!sourceDateCheck.ok) {
+        return null;
+      }
+
+      return {
+        ...signal,
+        published_at: sourceDateCheck.verifiedPublishedAt || signal.published_at,
+        source_urls
+      };
     }
 
     return {
